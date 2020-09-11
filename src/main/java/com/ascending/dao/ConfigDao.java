@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ConfigDao {
     Config save(Config config);
-    boolean delete();
+    boolean delete(Config config);
     boolean update(Config congig);
     List<Config> getConfigs();
     boolean deleteByName(String name);

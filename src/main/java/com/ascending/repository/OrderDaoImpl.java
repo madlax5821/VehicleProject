@@ -114,11 +114,11 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public Order getOrderByName(String name) {
+    public Order getOrderByName(String orderNumber) {
         String hql_getByName = "From Order as o where o.orderNumber=:order_number";
         try(Session session = HibernateUtil.getSession()){
             Query<Order> query = session.createQuery(hql_getByName);
-            query.setParameter("order_number",Long.parseLong(name));
+            query.setParameter("order_number",orderNumber);
             List<Order> orders = query.list();
             Random r = new Random();
             return orders.get(r.nextInt(orders.size()));

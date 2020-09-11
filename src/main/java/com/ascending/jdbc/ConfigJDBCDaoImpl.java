@@ -51,13 +51,14 @@ public class ConfigJDBCDaoImpl implements ConfigDao {
     }
 
     @Override
-    public boolean delete() {
+    public boolean delete(Config config) {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            String sql_delete = "DELETE FROM config";
+            String sql_delete = "DELETE FROM config where id=?";
             preparedStatement = conn.prepareStatement(sql_delete);
+            preparedStatement.setLong(1,config.getId());
             int row = preparedStatement.executeUpdate();
             if (row > 0) {
                 logger.info("Data delete completed...");

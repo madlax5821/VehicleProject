@@ -1,6 +1,7 @@
 package com.ascending.repository;
 
 import com.ascending.dao.BrandDao;
+import com.ascending.dao.ModelDao;
 import com.ascending.model.Brand;
 import com.ascending.model.Config;
 import com.ascending.model.Model;
@@ -14,6 +15,7 @@ import java.util.List;
 
 public class BrandDaoTest {
     private static BrandDao brandDao;
+    private static ModelDao modelDao;
     private Logger logger = LoggerFactory.getLogger(BrandDaoTest.class);
     private Brand testBrand;
     private Model mod1;
@@ -21,29 +23,30 @@ public class BrandDaoTest {
     private Config con1;
     private Config con2;
     @BeforeClass
-    public static void setupOnce(){ brandDao = new BrandDaoImpl(); }
+    public static void setupOnce(){ brandDao = new BrandDaoImpl(); modelDao = new ModelDaoImpl();}
 
     @Before
     public void setup(){
-        Brand brand = new Brand("Lamborghini","Italy","Super car");
-        testBrand = brandDao.save(brand);
-               Date date = new Date(2016);
-        mod1 = new Model("Diablo","sedan","niuB");
-        mod2 = new Model("Aventador","sedan","niuX");
-        con1 = new Config("VT6.0","fast",date);
-        con2 = new Config("LP700-4","fast",date);
+        Date date = new Date(2016);
+        testBrand= new Brand("TestBrand","Test","Test");
+        mod1 = new Model("TestModel1","Test","Test");
+        mod2 = new Model("TestModel2","Test","Test");
+        brandDao.save(testBrand);
+//        con1 = new Config("VT6.0","fast",date);
+//        con2 = new Config("LP700-4","fast",date);//todo
 
-        mod1.getConfigs().add(con1);
-        con1.setModel(mod1);
+//        mod1.getConfigs().add(con1);
+//        con1.setModel(mod1);
 
-        mod2.getConfigs().add(con2);
-        con2.setModel(mod2);
+//        mod2.getConfigs().add(con2);
+//        con2.setModel(mod2);
 
         testBrand.getModels().add(mod1);
         mod1.setBrand(testBrand);
+//        modelDao.save(mod1);
+        //brandDao.save(testBrand);
 
-        testBrand.getModels().add(mod2);
-        mod2.setBrand(testBrand);
+        //testBrand.addModel(mod2);
     };
 
     @After

@@ -2,6 +2,7 @@ package com.ascending.jdbc;
 
 import com.ascending.dao.ModelDao;
 import com.ascending.model.Model;
+import com.ascending.repository.ModelDaoImpl;
 import com.ascending.util.JDBCUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -227,6 +228,11 @@ public class ModelJDBCDaoImpl implements ModelDao {
             }
         }
         return model;
+    }
+
+    public static void main(String[] args) {
+        ModelDao modelDao = new ModelDaoImpl();
+        modelDao.save(new Model("ddd","ddd","ddd"));
     }
 
 }

@@ -28,10 +28,10 @@ public class ModelDaoTest {
         con1=new Config("TestModel1","test1",date);
         con2=new Config("TestModel2","test2",date);
 
-        testModel.getConfigs().add(con1);
-        con1.setModel(testModel);
-        testModel.getConfigs().add(con2);
-        con2.setModel(testModel);
+//        testModel.getConfigs().add(con1);
+//        con1.setModel(testModel);
+//        testModel.getConfigs().add(con2);
+//        con2.setModel(testModel);
     }
     @After
     public void cleanUp(){modelDao.deleteByName("TestModel");}

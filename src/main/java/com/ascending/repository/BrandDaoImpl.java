@@ -1,10 +1,12 @@
 package com.ascending.repository;
 
 import com.ascending.dao.BrandDao;
+import com.ascending.dao.ModelDao;
 import com.ascending.jdbc.BrandJDBCDaoImpl;
 import com.ascending.model.Brand;
 import com.ascending.model.Model;
 import com.ascending.util.HibernateUtil;
+import jdk.internal.org.objectweb.asm.tree.MultiANewArrayInsnNode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -137,7 +139,13 @@ public class BrandDaoImpl implements BrandDao {
     public List<Brand> getBrandsWithChildren() {
         return null;
     }
-
+    private static Model model;
+    private static ModelDao modelDao;
+    public static void main(String[] args) {
+        BrandDao brandDao= new BrandDaoImpl();
+        Brand brand = new Brand("ss","ss","qq");
+        System.out.println(brandDao.save(brand));
+    }
 }
 
 

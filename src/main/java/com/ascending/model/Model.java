@@ -25,12 +25,17 @@ public class Model {
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
+    @Transient
+    @Column(name = "brand_id")
+    private long brandId;
+
     //@OneToMany(mappedBy = "model",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @OneToMany(mappedBy = "model", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Config> configs;
 
 
-    public Model() {}
+    public Model() {
+    }
 
     public Model(long id, String modelName, String vehicleType, String description) {
         this.setId(id);
@@ -101,6 +106,13 @@ public class Model {
         this.configs = configs;
     }
 
+    public long getBrandId() {
+        return brandId;
+    }
+
+    public void setBrandId(long brandId) {
+        this.brandId = brandId;
+    }
 
     @Override
     public String toString() {

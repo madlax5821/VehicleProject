@@ -11,5 +11,5 @@ public interface OrderDao {
     List<Order> getOrders();
     boolean deleteByOrderName(String name);
     Order getOrderById(long id);
-    Order getOrderByName(String name);
+    Order getOrderByName(String orderNumber);
 }

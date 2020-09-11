@@ -123,7 +123,7 @@ public class ModelDaoImpl implements ModelDao {
     @Override
     public Model getModelByName(String name) {
         String hql_getByName = "From Model as m where m.modelName=:name";
-        List<Model> models = new ArrayList<>();
+        List<Model> models;
         try(Session session = HibernateUtil.getSession()){
             Query<Model> query = session.createQuery(hql_getByName);
             query.setParameter("name",name);
@@ -134,12 +134,12 @@ public class ModelDaoImpl implements ModelDao {
     }
     private static Brand brand;
     public static void main(String[] args) {
-//        ModelDao modelDao = new ModelDaoImpl();
-//        Model model = new Model("aaa","aaa","aaa");
-//        Model savedModel = modelDao.save(model);
-//        System.out.println(savedModel);
-//        brand = new BrandDaoImpl().getBrandById(3l);
-//        brand.getModels().add(savedModel);
-//        savedModel.setBrand(brand);
+        ModelDao modelDao = new ModelDaoImpl();
+        Model model = new Model();
+        model.setModelName("aaa");
+        model.setVehicleType("sedan");
+        model.setDescription("sss");
+        modelDao.save(model);
+
     }
 }

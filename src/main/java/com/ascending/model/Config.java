@@ -16,7 +16,7 @@ public class Config {
     @Column(name = "key_feature")
     private String keyFeatures;
     @Column(name= "year")
-    private java.sql.Date year;
+    private Date year;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "model_id")
     private Model model;
