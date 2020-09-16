@@ -2,24 +2,28 @@ package com.ascending.repository;
 
 import com.ascending.dao.CustomerDao;
 import com.ascending.model.Customer;
+import com.ascending.model.Order;
 import com.ascending.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Random;
 
+@Repository("CustomerDaoImpl")
 public class CustomerDaoImpl implements CustomerDao {
     private Logger logger = LoggerFactory.getLogger(CustomerDaoImpl.class);
     @Override
-    public Customer save(Customer customer) {
+    public Customer save(Customer customer, Order order) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
+            customer.setOrder(order);
             session.save(customer);
             transaction.commit();
             session.close();
@@ -51,12 +55,13 @@ public class CustomerDaoImpl implements CustomerDao {
     }
 
     @Override
-    public boolean update(Customer customer) {
+    public boolean update(Customer customer, Order order) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = null;
         int ifUpdate = 0;
         try {
             transaction = session.beginTransaction();
+            customer.setOrder(order);
             session.update(customer);
             transaction.commit();
             session.close();
@@ -124,10 +129,4 @@ public class CustomerDaoImpl implements CustomerDao {
         }
     }
 
-    public static void main(String[] args) {
-        Customer customer = new Customer("name","123456","123@123","stupid");
-        CustomerDao customerDao = new CustomerDaoImpl();
-        customerDao.save(customer);
-        System.out.println(customerDao.deleteByName(customer.getName()));
-    }
 }

@@ -9,27 +9,29 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="id")
     private long id;
+
     @Column(name ="name")
     private String name;
+
     @Column(name= "cell_number")
     private String phoneNumber;
+
     @Column(name = "email")
     private String email;
+
     @Column(name = "information")
     private String information;
-    @OneToOne
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="order_id")
-    private Customer customer;
+    private Order order;
 
-    public Customer getCustomer() {
-        return customer;
-    }
-
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
+    @Transient
+    @Column(name="order_id")
+    private long orderId;
 
     public Customer(){};
+
     public Customer(long id, String name, String phoneNumber, String email, String information){
         this.setId(id);this.setName(name);this.setPhoneNumber(phoneNumber);this.setEmail(email);this.setInformation(information);
     }
@@ -75,6 +77,18 @@ public class Customer {
 
     public void setInformation(String information) {
         this.information = information;
+    }
+
+    public Order getOrder() { return order; }
+
+    public void setOrder(Order order) { this.order = order; }
+
+    public long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(long orderId) {
+        this.orderId = orderId;
     }
 
     @Override

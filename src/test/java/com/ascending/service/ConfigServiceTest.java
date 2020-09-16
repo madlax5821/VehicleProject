@@ -1,92 +1,86 @@
-package com.ascending.jdbc;
+package com.ascending.service;
 
-import com.ascending.dao.ConfigDao;
-import com.ascending.dao.ModelDao;
 import com.ascending.init.AppInitializer;
 import com.ascending.model.Config;
 import com.ascending.model.Model;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import java.sql.Date;
+
 import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AppInitializer.class)
-public class ConfigJDBCDaoTest {
-    private Logger logger = LoggerFactory.getLogger(ConfigJDBCDaoTest.class);
-    @Autowired
-    @Qualifier("ConfigJDBCDaoImpl")
-    private ConfigDao configDao;
+public class ConfigServiceTest {
+    private Logger logger = LoggerFactory.getLogger(ConfigServiceTest.class);
 
     @Autowired
-    @Qualifier("ModelJDBCDaoImpl")
-    private ModelDao modelDao;
+    private ConfigService configService;
+
+    @Autowired
+    private ModelService modelService;
 
     private Config testConfig;
     private Model testModel;
 
-//    @BeforeClass
-//    public static void setup(){configDao = new ConfigJDBCDaoImpl();}
-
     @Before
-    public void setTestConfig(){
-        testModel = modelDao.getModelById(1l);
+    public void setup(){
+        testModel = modelService.getModelById(1l);
         testConfig = new Config();
         testConfig.setConfigName("testConfig");
-        configDao.save(testConfig,testModel);
-        testConfig = configDao.getConfigByName(testConfig.getConfigName());
+        configService.saveConfig(testConfig,testModel);
     }
-
     @After
-    public void cleanUp(){configDao.delete(testConfig);}
+    public void cleanUp(){configService.deleteConfig(testConfig);}
 
     @Test
     public void saveConfigTest(){
         Config config = testConfig;
-        configDao.save(config,testModel);
+        configService.saveConfig(config,testModel);
         Assert.assertEquals("config objects comparison",testConfig,config);
     }
 
     @Test
     public void deleteConfigTest(){
-        boolean ifDelete = configDao.delete(testConfig);
+        boolean ifDelete = configService.deleteConfig(testConfig);
         Assert.assertTrue(ifDelete);
     }
 
     @Test
     public void updateConfigTest(){
         testConfig.setConfigName("updateTest");
-        boolean ifUpdated = configDao.update(testConfig,testModel);
-        Assert.assertTrue(ifUpdated);
+        boolean ifUpdate = configService.updateConfig(testConfig,testModel);
+        Assert.assertTrue(ifUpdate);
     }
 
     @Test
     public void getAllConfigsTest(){
-        List<Config> configs = configDao.getConfigs();
-        Assert.assertEquals("configs amount comparison",4,configs.size());
+        List<Config> configs = configService.getAllConfigs();
+        Assert.assertEquals("config objects amount",4,configs.size());
     }
-
+    
     @Test
     public void deleteConfigByNameTest(){
-        boolean ifDelete = configDao.deleteByName(testConfig.getConfigName());
+        boolean ifDelete = configService.deleteConfigByName(testConfig.getConfigName());
         Assert.assertTrue(ifDelete);
     }
 
     @Test
     public void getConfigByIdTest(){
-        Config config = configDao.getConfigById(testConfig.getId());
+        Config config = configService.getConfigById(testConfig.getId());
         Assert.assertEquals("config objects comparison",testConfig,config);
     }
 
     @Test
     public void getConfigByNameTest(){
-        Config config = configDao.getConfigByName(testConfig.getConfigName());
+        Config config = configService.getConfigByName(testConfig.getConfigName());
         Assert.assertEquals("config objects comparison",testConfig,config);
     }
 }

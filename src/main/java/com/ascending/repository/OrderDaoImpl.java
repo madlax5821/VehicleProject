@@ -1,6 +1,7 @@
 package com.ascending.repository;
 
 import com.ascending.dao.OrderDao;
+import com.ascending.model.Config;
 import com.ascending.model.Order;
 import com.ascending.util.HibernateUtil;
 import org.hibernate.Session;
@@ -8,19 +9,21 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Random;
-
+@Repository("OrderDaoImpl")
 public class OrderDaoImpl implements OrderDao {
     private Logger logger = LoggerFactory.getLogger(OrderDaoImpl.class);
 
     @Override
-    public Order save(Order order) {
+    public Order save(Order order, Config config) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
+            order.setConfig(config);
             session.save(order);
             transaction.commit();
             session.close();
@@ -52,12 +55,13 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public boolean update(Order order) {
+    public boolean update(Order order, Config config) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = null;
         int ifUpdate = 0;
         try {
             transaction = session.beginTransaction();
+            order.setConfig(config);
             session.update(order);
             transaction.commit();
             session.close();
@@ -86,7 +90,7 @@ public class OrderDaoImpl implements OrderDao {
         String hql_deleteByName = "from Order as o where o.orderNumber=:order_number";
         int ifDelete = 0;
         try {
-            transaction = session.getTransaction();
+            transaction = session.beginTransaction();
             Query<Order> query = session.createQuery(hql_deleteByName);
             query.setParameter("order_number",name);
             for (Order order:query.list()){
@@ -100,7 +104,7 @@ public class OrderDaoImpl implements OrderDao {
             logger.info("Failed to delete order by name, error="+e.getMessage());
             session.close();
         }
-        return false;
+        return ifDelete>0;
     }
 
     @Override

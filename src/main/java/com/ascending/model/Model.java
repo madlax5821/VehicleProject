@@ -25,14 +25,13 @@ public class Model {
     @JoinColumn(name = "brand_id")
     private Brand brand;
 
-    @Transient
-    @Column(name = "brand_id")
-    private long brandId;
-
     //@OneToMany(mappedBy = "model",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @OneToMany(mappedBy = "model", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Config> configs;
 
+    @Transient
+    @Column(name="brand_id")
+    private long brandId;
 
     public Model() {
     }

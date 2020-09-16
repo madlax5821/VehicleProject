@@ -2,13 +2,15 @@ package com.ascending.jdbc;
 
 import com.ascending.dao.CustomerDao;
 import com.ascending.model.Customer;
+import com.ascending.model.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@Repository("CustomerJDBCDaoImpl")
 public class CustomerJDBCDaoImpl implements CustomerDao {
     Logger logger = LoggerFactory.getLogger(CustomerJDBCDaoImpl.class);
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/windowsDB";
@@ -16,18 +18,17 @@ public class CustomerJDBCDaoImpl implements CustomerDao {
     private static final String PASS = "123456";
 
     @Override
-    public Customer save(Customer customer) {
+    public Customer save(Customer customer, Order order) {
         Customer createdCustomer = null;
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
             conn = DriverManager.getConnection(DB_URL,USER,PASS);
-            String sql_save = "INSERT INTO customer(NAME,CELL_NUMBER,EMAIL,INFORMATION)VALUES(?,?,?,?)";
+            customer.setOrder(order);
+            String sql_save = "INSERT INTO customer(NAME,ORDER_ID)VALUES(?,?)";
             preparedStatement = conn.prepareStatement(sql_save);
             preparedStatement.setString(1,customer.getName());
-            preparedStatement.setString(2,customer.getPhoneNumber());
-            preparedStatement.setString(3,customer.getEmail());
-            preparedStatement.setString(4,customer.getInformation());
+            preparedStatement.setLong(2,order.getId());
             int row = preparedStatement.executeUpdate();
             if (row>0){
                 logger.info("Customer insert successfully");
@@ -74,18 +75,15 @@ public class CustomerJDBCDaoImpl implements CustomerDao {
     }
 
     @Override
-    public boolean update(Customer customer) {
+    public boolean update(Customer customer, Order order) {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
             conn = DriverManager.getConnection(DB_URL,USER,PASS);
-            String sql_update = "UPDATE customer SET NAME=?,CELL_NUMBER=?,EMAIL=?,INFORMATION=? WHERE id=?";
+            String sql_update = "UPDATE customer SET NAME=? WHERE id=?";
             preparedStatement = conn.prepareStatement(sql_update);
             preparedStatement.setString(1,customer.getName());
-            preparedStatement.setString(2,customer.getPhoneNumber());
-            preparedStatement.setString(3,customer.getEmail());
-            preparedStatement.setString(4,customer.getInformation());
-            preparedStatement.setLong(5,customer.getId());
+            preparedStatement.setLong(2,customer.getId());
             int row = preparedStatement.executeUpdate();
             if (row >0){
                 logger.info("update data successfully");
@@ -146,10 +144,12 @@ public class CustomerJDBCDaoImpl implements CustomerDao {
     public boolean deleteByName(String name) {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
+        int result =0;
         try {
             conn = DriverManager.getConnection(DB_URL,USER,PASS);
             String sql_delByName = "Delete FROM customer WHERE name=?";
             preparedStatement = conn.prepareStatement(sql_delByName);
+            preparedStatement.setString(1,name);
             int row = preparedStatement.executeUpdate();
             if (row>0){
                 logger.info("delete by name successfully");
@@ -211,7 +211,7 @@ public class CustomerJDBCDaoImpl implements CustomerDao {
     public Customer getCustomerByName(String name) {
         Connection conn = null;
         Statement statement = null;
-        List<Customer> customers = null;
+        Customer customer = new Customer();
         ResultSet resultSet = null;
         try {
             conn = DriverManager.getConnection(DB_URL,USER,PASS);
@@ -224,14 +224,12 @@ public class CustomerJDBCDaoImpl implements CustomerDao {
                 String phoneNumber = resultSet.getString("cell_number");
                 String email = resultSet.getString("email");
                 String information = resultSet.getString("information");
-                Customer customer = new Customer();
                 if (name1.equals(name)){
                     customer.setId(id);
                     customer.setName(name1);
                     customer.setPhoneNumber(phoneNumber);
                     customer.setEmail(email);
                     customer.setInformation(information);
-                    customers.add(customer);
                 }
             }
         } catch (SQLException throwables) {
@@ -245,6 +243,6 @@ public class CustomerJDBCDaoImpl implements CustomerDao {
             }
         }
 
-        return null;
+        return customer;
     }
 }

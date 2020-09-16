@@ -6,17 +6,16 @@ import com.ascending.jdbc.BrandJDBCDaoImpl;
 import com.ascending.model.Brand;
 import com.ascending.model.Model;
 import com.ascending.util.HibernateUtil;
-import jdk.internal.org.objectweb.asm.tree.MultiANewArrayInsnNode;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.nio.channels.SeekableByteChannel;
+import org.springframework.stereotype.Repository;
 import java.util.List;
 
+@Repository("BrandDaoImpl")
 public class BrandDaoImpl implements BrandDao {
     private Logger logger = LoggerFactory.getLogger(BrandDaoImpl.class);
 
@@ -139,13 +138,7 @@ public class BrandDaoImpl implements BrandDao {
     public List<Brand> getBrandsWithChildren() {
         return null;
     }
-    private static Model model;
-    private static ModelDao modelDao;
-    public static void main(String[] args) {
-        BrandDao brandDao= new BrandDaoImpl();
-        Brand brand = new Brand("ss","ss","qq");
-        System.out.println(brandDao.save(brand));
-    }
+
 }
 
 

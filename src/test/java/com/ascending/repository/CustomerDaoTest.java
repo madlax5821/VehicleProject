@@ -1,34 +1,52 @@
 package com.ascending.repository;
 
 import com.ascending.dao.CustomerDao;
+import com.ascending.dao.OrderDao;
+import com.ascending.init.AppInitializer;
 import com.ascending.model.Customer;
+import com.ascending.model.Order;
 import org.junit.*;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
-
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = AppInitializer.class)
 public class CustomerDaoTest {
-
     private Logger logger = LoggerFactory.getLogger(CustomerDaoTest.class);
-    private static CustomerDao customerDao;
+    @Autowired
+    @Qualifier("CustomerDaoImpl")
+    private CustomerDao customerDao;
+    @Autowired
+    @Qualifier("OrderDaoImpl")
+    private OrderDao orderDao;
     private Customer testCustomer;
+    private Order testOrder;
 
-    @BeforeClass
-    public static void setup(){customerDao=new CustomerDaoImpl();}
+//    @BeforeClass
+//    public static void setup(){customerDao=new CustomerDaoImpl();}
 
     @Before
-    public void initTestCustomer(){testCustomer=customerDao.save(new Customer("test","123","123@test","test"));}
-
+    public void initTestCustomer(){
+        testOrder = orderDao.getOrderById(1l);
+        testCustomer=new Customer();
+        testCustomer.setName("testCustomer");
+        customerDao.save(testCustomer,testOrder);
+        testCustomer = customerDao.getCustomerByName("testCustomer");
+    }
     @After
-    public void cleanUp(){customerDao.deleteByName(testCustomer.getName());}
+    public void cleanUp(){customerDao.delete(testCustomer);}
 
     @Test
     public void saveCustomerTest(){
         Customer customer = testCustomer;
-        Customer savedCustomer = customerDao.save(customer);
-        Assert.assertEquals("Customer comparison",testCustomer,savedCustomer);
+        customerDao.save(customer,testOrder);
+        Assert.assertEquals("Customer comparison",testCustomer,customer);
     }
 
     @Test
@@ -40,14 +58,14 @@ public class CustomerDaoTest {
     @Test
     public void updateCustomerTest(){
         Customer customer = new Customer(testCustomer.getId(),"test","999","999@qq.com","modified");
-        boolean ifUpdate= customerDao.update(customer);
+        boolean ifUpdate= customerDao.update(customer,testOrder);
         Assert.assertTrue(ifUpdate);
     }
 
     @Test
     public void getCustomersTest(){
         List<Customer> customers = customerDao.getCustomers();
-        Assert.assertEquals("amount of customer comparison",1,customers.size());
+        Assert.assertEquals("amount of customer comparison",5,customers.size());
     }
 
     @Test

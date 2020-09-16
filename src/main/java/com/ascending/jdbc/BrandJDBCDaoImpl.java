@@ -3,13 +3,15 @@ package com.ascending.jdbc;
 import com.ascending.dao.BrandDao;
 import com.ascending.model.Brand;
 import com.ascending.repository.BrandDaoImpl;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository("BrandJDBCDaoImpl")
 public class BrandJDBCDaoImpl implements BrandDao {
     private Logger logger = LoggerFactory.getLogger(BrandJDBCDaoImpl.class);
     //STEP 1: Database information
@@ -57,8 +59,6 @@ public class BrandJDBCDaoImpl implements BrandDao {
     public boolean delete(Brand brand) {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
-
-
         try {
             //1. connect to database
             logger.info("Connecting to database...");
@@ -91,7 +91,7 @@ public class BrandJDBCDaoImpl implements BrandDao {
     public boolean update(Brand brand) {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
-
+        int ifUpdate =0;
         try {
             logger.info("Connecting to database...");
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
@@ -103,7 +103,7 @@ public class BrandJDBCDaoImpl implements BrandDao {
             int rows = preparedStatement.executeUpdate();
             if (rows>0){
                 logger.info("data updated successfully");
-                return true;
+                ifUpdate=1;
             }
 
         } catch (SQLException throwables) {
@@ -116,7 +116,7 @@ public class BrandJDBCDaoImpl implements BrandDao {
                 throwables.printStackTrace();
             }
         }
-        return false;
+        return ifUpdate>0;
     }
 
     @Override
@@ -207,7 +207,7 @@ public class BrandJDBCDaoImpl implements BrandDao {
         Brand targetBrand = new Brand();
         Connection conn = null;
         Statement statement = null;
-        ResultSet resultSet = null;
+        ResultSet resultSet;
         try {
             conn = DriverManager.getConnection(DB_URL,USER,PASS);
             String sql_ByCol = "SELECT * FROM brand";
@@ -218,7 +218,7 @@ public class BrandJDBCDaoImpl implements BrandDao {
                 String name = resultSet.getString("name");
                 String nationality = resultSet.getString("nationality");
                 String description = resultSet.getString("description");
-                if (id1==id){
+                if (id1.equals(id)){
                     targetBrand.setId(id1);
                     targetBrand.setName(name);
                     targetBrand.setNationality(nationality);
@@ -244,7 +244,8 @@ public class BrandJDBCDaoImpl implements BrandDao {
         Brand targetBrand = new Brand();
         Connection conn = null;
         Statement stmt = null;
-        ResultSet rs = null;
+        ResultSet rs;
+        List<Brand> brands = new ArrayList<>();
         //STEP 2: Open a connection
         logger.info("Connecting to database...");
         try {
@@ -272,10 +273,9 @@ public class BrandJDBCDaoImpl implements BrandDao {
                     targetBrand.setName(name);
                     targetBrand.setNationality(nationality);
                     targetBrand.setDescription(description);
-                    break;
+                    brands.add(targetBrand);
                 }
             }
-            return targetBrand;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }finally{
@@ -286,7 +286,7 @@ public class BrandJDBCDaoImpl implements BrandDao {
                 throwables.printStackTrace();
             }
         }
-        return null;
+        return targetBrand;
     }
 
     @Override
@@ -296,7 +296,10 @@ public class BrandJDBCDaoImpl implements BrandDao {
 
     public static void main(String[] args) {
         BrandDao brandDao = new BrandJDBCDaoImpl();
-        Brand testBrand = brandDao.getBrandByName("aaa");
-        System.out.println(testBrand);
+        Brand brand = new Brand("ss","ss","ss");
+        brandDao.save(brand);
+        brand = brandDao.getBrandByName("ss");
+
+        System.out.println(brandDao.getBrandById(184l));
     }
 }

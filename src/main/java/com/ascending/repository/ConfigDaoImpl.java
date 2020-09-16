@@ -2,26 +2,28 @@ package com.ascending.repository;
 
 import com.ascending.dao.ConfigDao;
 import com.ascending.model.Config;
+import com.ascending.model.Model;
 import com.ascending.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
+import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Random;
 
+@Repository("ConfigDaoImpl")
 public class ConfigDaoImpl implements ConfigDao {
     private Logger logger = LoggerFactory.getLogger(ConfigDaoImpl.class);
 
     @Override
-    public Config save(Config config) {
+    public Config save(Config config, Model model) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = null;
         try {
-            transaction = session.getTransaction();
+            transaction = session.beginTransaction();
+            config.setModel(model);
             session.save(config);
             transaction.commit();
             session.close();
@@ -39,7 +41,7 @@ public class ConfigDaoImpl implements ConfigDao {
         Transaction transaction = null;
         int ifDelete = 0;
         try {
-            transaction = session.getTransaction();
+            transaction = session.beginTransaction();
             session.delete(config);
             transaction.commit();
             session.close();
@@ -53,12 +55,13 @@ public class ConfigDaoImpl implements ConfigDao {
     }
 
     @Override
-    public boolean update(Config config) {
+    public boolean update(Config config, Model model) {
         Transaction transaction = null;
         Session session = HibernateUtil.getSession();
         int ifUpdate = 0;
         try {
-            transaction = session.getTransaction();
+            transaction = session.beginTransaction();
+            config.setModel(model);
             session.update(config);
             transaction.commit();
             session.close();
@@ -87,7 +90,7 @@ public class ConfigDaoImpl implements ConfigDao {
         String hql_deleteByName = "from Config as con where con.configName=:name";
         int ifDeleteByName = 0;
         try {
-            transaction = session.getTransaction();
+            transaction = session.beginTransaction();
             Query<Config> query = session.createQuery(hql_deleteByName);
             query.setParameter("name",name);
             for (Config config:query.list()){
@@ -101,7 +104,7 @@ public class ConfigDaoImpl implements ConfigDao {
             logger.info("Failed to delete config object by name, error="+e.getMessage());
             session.close();
         }
-        return false;
+        return ifDeleteByName>0;
     }
 
     @Override
@@ -125,4 +128,5 @@ public class ConfigDaoImpl implements ConfigDao {
             return configs.get(r.nextInt(configs.size()));
         }
     }
+
 }

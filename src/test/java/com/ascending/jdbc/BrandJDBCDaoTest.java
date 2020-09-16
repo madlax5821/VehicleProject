@@ -1,45 +1,54 @@
 package com.ascending.jdbc;
 
 import com.ascending.dao.BrandDao;
+import com.ascending.init.AppInitializer;
 import com.ascending.model.Brand;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = AppInitializer.class)
 public class BrandJDBCDaoTest {
     private Logger logger = LoggerFactory.getLogger(BrandJDBCDaoTest.class);
-    private static BrandDao brandDao;
+
+    @Autowired
+    @Qualifier("BrandJDBCDaoImpl")
+    private BrandDao brandDao;
+
     private Brand testBrand;
 
-    @BeforeClass
-    public static void setup(){
-        brandDao = new BrandJDBCDaoImpl();
-    }
+//    @BeforeClass
+//    public static void setup(){
+//        brandDao = new BrandJDBCDaoImpl();
+//    }
 
     @Before
     public void setupObjectForTest(){
-        testBrand = new Brand("Lamborghini","Germany","super racing car");
+        testBrand = new Brand("test","test","test");
         brandDao.save(testBrand);
+        testBrand = brandDao.getBrandByName("test");
     }
-
     @After
     public void cleanUp(){
-        brandDao.deleteByName("Lamborghini");
+        brandDao.delete(testBrand);
     }
 
     @Test
     public void getBrandsTest(){
         List<Brand> brands = brandDao.getBrands();
-        assertEquals(2,brands.size());
+        assertEquals(4,brands.size());
     }
+
     @Test
     public void saveBrandTest(){
         Brand brand = testBrand;
@@ -49,14 +58,33 @@ public class BrandJDBCDaoTest {
     }
 
     @Test
-    public void deleteByNameTest(){
+    public void deleteBrandByNameTest(){
         boolean deleteResult = brandDao.deleteByName(testBrand.getName());
         assertTrue(deleteResult);
     }
 
     @Test
+    public void deleteBrandTest(){
+        boolean ifDelete = brandDao.delete(testBrand);
+        Assert.assertTrue(ifDelete);
+    }
+
+    @Test
+    public void getBrandByIdTest(){
+        Brand brand = brandDao.getBrandById(testBrand.getId());
+        Assert.assertEquals("brand objects comparison",testBrand,brand);
+    }
+
+    @Test
+    public void getBrandByNameTest(){
+        Brand brand = brandDao.getBrandByName(testBrand.getName());
+        Assert.assertEquals("brand objects comparison",testBrand,brand);
+    }
+
+    @Test
     public void updateTest(){
-        Brand brand = testBrand;
-        assertTrue(brandDao.update(brand));
+        testBrand.setNationality("updateTest");
+        testBrand.setDescription("updateTest");
+        assertTrue(brandDao.update(testBrand));
     }
 }

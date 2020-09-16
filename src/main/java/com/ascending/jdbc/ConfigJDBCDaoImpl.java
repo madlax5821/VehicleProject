@@ -1,14 +1,17 @@
 package com.ascending.jdbc;
 
 import com.ascending.dao.ConfigDao;
+import com.ascending.dao.ModelDao;
 import com.ascending.model.Config;
+import com.ascending.model.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.stereotype.Repository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository("ConfigJDBCDaoImpl")
 public class ConfigJDBCDaoImpl implements ConfigDao {
     Logger logger = LoggerFactory.getLogger(ConfigJDBCDaoImpl.class);
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/windowsDB";
@@ -16,17 +19,16 @@ public class ConfigJDBCDaoImpl implements ConfigDao {
     private static final String PASS = "123456";
 
     @Override
-    public Config save(Config config) {
+    public Config save(Config config, Model model) {
         Config createdConfig = null;
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            String sql_save = "INSERT INTO config(NAME,KEY_FEATURES,YEAR)VALUES(?,?,?)";
+            String sql_save = "INSERT INTO config(NAME,MODEL_ID)VALUES(?,?)";
             preparedStatement = conn.prepareStatement(sql_save);
             preparedStatement.setString(1, config.getConfigName());
-            preparedStatement.setString(2, config.getKeyFeatures());
-            preparedStatement.setDate(3, (Date) config.getYear());
+            preparedStatement.setLong(2, model.getId());
             int row = preparedStatement.executeUpdate();
             if (row > 0) {
                 logger.info("object has been inserted successfully...");
@@ -54,15 +56,17 @@ public class ConfigJDBCDaoImpl implements ConfigDao {
     public boolean delete(Config config) {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
+        int ifDelete = 0;
         try {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
             String sql_delete = "DELETE FROM config where id=?";
             preparedStatement = conn.prepareStatement(sql_delete);
+
             preparedStatement.setLong(1,config.getId());
             int row = preparedStatement.executeUpdate();
             if (row > 0) {
                 logger.info("Data delete completed...");
-                return true;
+                ifDelete=1;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -78,24 +82,25 @@ public class ConfigJDBCDaoImpl implements ConfigDao {
                 throwables.printStackTrace();
             }
         }
-        return false;
+        return ifDelete>0;
     }
 
     @Override
-    public boolean update(Config config) {
+    public boolean update(Config config, Model model) {
         Connection conn = null;
         PreparedStatement preparedStatement = null;
+        int ifUpdate = 0;
         try {
             conn = DriverManager.getConnection(DB_URL, USER, PASS);
-            String sql_update = "UPDATE config SET key_features=?, year=? WHERE name=?";
+            String sql_update = "UPDATE config SET key_feature=?, name=? WHERE id=?";
             preparedStatement = conn.prepareStatement(sql_update);
             preparedStatement.setString(1, config.getKeyFeatures());
-            preparedStatement.setDate(2, (Date) config.getYear());
-            preparedStatement.setString(3, config.getConfigName());
+            preparedStatement.setString(2, config.getConfigName());
+            preparedStatement.setLong(3, config.getId());
             int row = preparedStatement.executeUpdate();
             if (row > 0) {
                 logger.info("data updated successfully");
-                return true;
+                ifUpdate=1;
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -111,8 +116,7 @@ public class ConfigJDBCDaoImpl implements ConfigDao {
                 throwables.printStackTrace();
             }
         }
-
-        return false;
+        return ifUpdate>0;
     }
 
     @Override
@@ -129,7 +133,7 @@ public class ConfigJDBCDaoImpl implements ConfigDao {
             while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 String name = resultSet.getString("name");
-                String feature = resultSet.getString("key_features");
+                String feature = resultSet.getString("key_feature");
                 Date year = resultSet.getDate("year");
                 Config config = new Config();
                 config.setId(id);
@@ -202,7 +206,7 @@ public class ConfigJDBCDaoImpl implements ConfigDao {
             while (resultSet.next()){
                 long id1 = resultSet.getLong("id");
                 String name = resultSet.getString("name");
-                String feature = resultSet.getString("key_features");
+                String feature = resultSet.getString("key_feature");
                 Date year = resultSet.getDate("year");
                 if (id1==id){
                     targetConfig.setId(id1);
@@ -240,14 +244,15 @@ public class ConfigJDBCDaoImpl implements ConfigDao {
             while (resultSet.next()){
                 long id = resultSet.getLong("id");
                 String name = resultSet.getString("name");
-                String feature = resultSet.getString("key_features");
+                String feature = resultSet.getString("key_feature");
                 Date year = resultSet.getDate("year");
-                if (name == string){
+                long modelId = resultSet.getLong("model_id");
+                if (name.equals(string)){
                     targetConfig.setId(id);
                     targetConfig.setConfigName(name);
                     targetConfig.setKeyFeatures(feature);
                     targetConfig.setYear(year);
-                    break;
+                    targetConfig.setModelId(modelId);
                 }
 
             }

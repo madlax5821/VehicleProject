@@ -2,6 +2,8 @@ package com.ascending.model;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @Entity
@@ -17,17 +19,18 @@ public class Config {
     private String keyFeatures;
     @Column(name= "year")
     private Date year;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "model_id")
     private Model model;
 
-    public Model getModel() {
-        return model;
-    }
+    //@OneToMany(mappedBy = "config",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "config", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Order> orders;
 
-    public void setModel(Model model) {
-        this.model = model;
-    }
+    @Transient
+    @Column(name="model_id")
+    private long modelId;
 
     public Config(String configName, String keyFeatures, Date year) {
         this.setConfigName(configName);
@@ -41,7 +44,6 @@ public class Config {
         this.setKeyFeatures(keyFeatures);
         this.setYear(year);
     }
-
 
     public Config() {};
 
@@ -77,5 +79,40 @@ public class Config {
         this.year = year;
     }
 
+    public Set<Order> getOrders() {
+        if(orders==null){
+            orders=new HashSet<Order>();
+        }
+        return orders;
+    }
 
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }
+
+    public Model getModel() {
+        return model;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+    }
+
+    public long getModelId() {
+        return modelId;
+    }
+
+    public void setModelId(long modelId) {
+        this.modelId = modelId;
+    }
+
+    @Override
+    public String toString() {
+        return "Config{" +
+                "id=" + id +
+                ", configName='" + configName + '\'' +
+                ", keyFeatures='" + keyFeatures + '\'' +
+                ", year=" + year +
+                '}';
+    }
 }

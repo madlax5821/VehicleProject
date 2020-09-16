@@ -5,39 +5,49 @@ import java.math.BigDecimal;
 import java.sql.Date;
 
 @Entity
-@Table(name="orders")
+@Table(name = "orders")
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private long id;
-    @Column(name="order_number")
+    @Column(name = "order_number")
     private String orderNumber;
-    @Column(name="price")
+    @Column(name = "price")
     private BigDecimal price;
-    @Column(name="purchase_date")
+    @Column(name = "purchase_date")
     private java.sql.Date purchaseDate;
-    @Column(name="requirement")
+    @Column(name = "requirement")
     private String requirement;
-    @OneToOne(fetch=FetchType.LAZY,mappedBy = "customer",cascade=CascadeType.ALL)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "config_id")
+    private Config config;
+
+    //@OneToOne(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
     private Customer customer;
 
-    public Customer getCustomer() {
-        return customer;
-    }
+    @Transient
+    @Column(name = "config_id")
+    private long configId;
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public Order() {
     }
-
-    public Order(){};
 
     public Order(long id, String orderNumber, BigDecimal price, Date purchaseDate, String requirement) {
-        this.setId(id);this.setOrderNumber(orderNumber);this.setPrice(price);this.setPurchaseDate(purchaseDate);this.setRequirement(requirement);
+        this.setId(id);
+        this.setOrderNumber(orderNumber);
+        this.setPrice(price);
+        this.setPurchaseDate(purchaseDate);
+        this.setRequirement(requirement);
     }
 
     public Order(String orderNumber, BigDecimal price, Date purchaseDate, String requirement) {
-        this.setOrderNumber(orderNumber);this.setPrice(price);this.setPurchaseDate(purchaseDate);this.setRequirement(requirement);
+        this.setOrderNumber(orderNumber);
+        this.setPrice(price);
+        this.setPurchaseDate(purchaseDate);
+        this.setRequirement(requirement);
     }
 
     public long getId() {
@@ -78,5 +88,40 @@ public class Order {
 
     public void setRequirement(String requirement) {
         this.requirement = requirement;
+    }
+
+    public Config getConfig() {
+        return config;
+    }
+
+    public void setConfig(Config config) {
+        this.config = config;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public long getConfigId() {
+        return configId;
+    }
+
+    public void setConfigId(long configId) {
+        this.configId = configId;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id=" + id +
+                ", orderNumber='" + orderNumber + '\'' +
+                ", price=" + price +
+                ", purchaseDate=" + purchaseDate +
+                ", requirement='" + requirement + '\'' +
+                '}';
     }
 }

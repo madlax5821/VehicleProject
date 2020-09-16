@@ -1,16 +1,18 @@
 package com.ascending.jdbc;
 
 import com.ascending.dao.ModelDao;
+import com.ascending.model.Brand;
 import com.ascending.model.Model;
-import com.ascending.repository.ModelDaoImpl;
 import com.ascending.util.JDBCUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository("ModelJDBCDaoImpl")
 public class ModelJDBCDaoImpl implements ModelDao {
     Logger logger = LoggerFactory.getLogger(ModelJDBCDaoImpl.class);
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/windowsDB";
@@ -18,17 +20,18 @@ public class ModelJDBCDaoImpl implements ModelDao {
     private static final String PASS = "123456";
 
     @Override
-    public Model save(Model model) {
+    public Model save(Model model, Brand brand) {
         Model createdModel = null;
         Connection conn = null;
         PreparedStatement preparedStatement = null;
         try {
             conn = DriverManager.getConnection(DB_URL,USER,PASS);
-            String sql_save = "INSERT INTO model(NAME,TYPE,DESCRIPTION)VALUES(?,?,?)";
+            String sql_save = "INSERT INTO model(NAME,TYPE,DESCRIPTION,BRAND_ID)VALUES(?,?,?,?)";
             preparedStatement = conn.prepareStatement(sql_save);
             preparedStatement.setString(1,model.getModelName());
             preparedStatement.setString(2,model.getVehicleType());
             preparedStatement.setString(3,model.getDescription());
+            preparedStatement.setLong(4,brand.getId());
             int row = preparedStatement.executeUpdate();
             if(row>0){
                 logger.info("new Model insert successfully");
@@ -75,7 +78,7 @@ public class ModelJDBCDaoImpl implements ModelDao {
     }
 
     @Override
-    public boolean update(Model model) {
+    public boolean update(Model model, Brand brand) {
         PreparedStatement preparedStatement = null;
         String sql_update = "UPDATE model SET NAME=?,TYPE=?,DESCRIPTION=? WHERE ID=?";
         try {
@@ -229,10 +232,4 @@ public class ModelJDBCDaoImpl implements ModelDao {
         }
         return model;
     }
-
-    public static void main(String[] args) {
-        ModelDao modelDao = new ModelDaoImpl();
-        modelDao.save(new Model("ddd","ddd","ddd"));
-    }
-
 }

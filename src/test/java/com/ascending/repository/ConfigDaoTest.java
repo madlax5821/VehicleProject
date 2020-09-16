@@ -1,46 +1,41 @@
-package com.ascending.jdbc;
+package com.ascending.repository;
 
 import com.ascending.dao.ConfigDao;
 import com.ascending.dao.ModelDao;
 import com.ascending.init.AppInitializer;
 import com.ascending.model.Config;
 import com.ascending.model.Model;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import java.sql.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AppInitializer.class)
-public class ConfigJDBCDaoTest {
-    private Logger logger = LoggerFactory.getLogger(ConfigJDBCDaoTest.class);
+public class ConfigDaoTest{
     @Autowired
-    @Qualifier("ConfigJDBCDaoImpl")
+    @Qualifier("ConfigDaoImpl")
     private ConfigDao configDao;
-
     @Autowired
-    @Qualifier("ModelJDBCDaoImpl")
+    @Qualifier("ModelDaoImpl")
     private ModelDao modelDao;
 
     private Config testConfig;
     private Model testModel;
 
-//    @BeforeClass
-//    public static void setup(){configDao = new ConfigJDBCDaoImpl();}
-
     @Before
-    public void setTestConfig(){
+    public void setup(){
         testModel = modelDao.getModelById(1l);
         testConfig = new Config();
         testConfig.setConfigName("testConfig");
         configDao.save(testConfig,testModel);
-        testConfig = configDao.getConfigByName(testConfig.getConfigName());
+
     }
 
     @After
@@ -61,19 +56,21 @@ public class ConfigJDBCDaoTest {
 
     @Test
     public void updateConfigTest(){
-        testConfig.setConfigName("updateTest");
-        boolean ifUpdated = configDao.update(testConfig,testModel);
-        Assert.assertTrue(ifUpdated);
+        Config config = new Config();
+        config.setId(testConfig.getId());
+        config.setConfigName("updatedTest");
+        boolean ifUpdate = configDao.update(testConfig,testModel);
+        Assert.assertTrue(ifUpdate);
     }
 
     @Test
     public void getAllConfigsTest(){
         List<Config> configs = configDao.getConfigs();
-        Assert.assertEquals("configs amount comparison",4,configs.size());
+        Assert.assertEquals("Configs amount comparison",4, configs.size());
     }
 
     @Test
-    public void deleteConfigByNameTest(){
+    public void deteleConfigByNameTest(){
         boolean ifDelete = configDao.deleteByName(testConfig.getConfigName());
         Assert.assertTrue(ifDelete);
     }
@@ -87,6 +84,6 @@ public class ConfigJDBCDaoTest {
     @Test
     public void getConfigByNameTest(){
         Config config = configDao.getConfigByName(testConfig.getConfigName());
-        Assert.assertEquals("config objects comparison",testConfig,config);
+        Assert.assertEquals("configs comparison",testConfig,config);
     }
 }

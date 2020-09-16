@@ -1,30 +1,28 @@
 package com.ascending.repository;
-
 import com.ascending.dao.ModelDao;
 import com.ascending.model.Brand;
 import com.ascending.model.Model;
 import com.ascending.util.HibernateUtil;
-import com.sun.corba.se.impl.oa.toa.TransientObjectManager;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jws.WebParam;
-import java.util.ArrayList;
+import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Random;
 
+@Repository("ModelDaoImpl")
 public class ModelDaoImpl implements ModelDao {
     private Logger logger = LoggerFactory.getLogger(ModelDaoImpl.class);
 
     @Override
-    public Model save(Model model) {
+    public Model save(Model model,Brand brand) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
+            model.setBrand(brand);
             session.save(model);
             transaction.commit();
             session.close();
@@ -59,12 +57,13 @@ public class ModelDaoImpl implements ModelDao {
     }
 
     @Override
-    public boolean update(Model model) {
+    public boolean update(Model model, Brand brand) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = null;
         int ifUpdated = 0;
         try{
             transaction = session.beginTransaction();
+            model.setBrand(brand);
             session.update(model);
             transaction.commit();
             session.close();
@@ -79,7 +78,7 @@ public class ModelDaoImpl implements ModelDao {
 
     @Override
     public List<Model> getModels() {
-        String hql_getAll = "from Model as m";
+        String hql_getAll = "from Model";
         try(Session session = HibernateUtil.getSession()){
             Query<Model> query = session.createQuery(hql_getAll);
             return query.list();
@@ -132,14 +131,5 @@ public class ModelDaoImpl implements ModelDao {
             return models.get(r.nextInt(models.size()));
         }
     }
-    private static Brand brand;
-    public static void main(String[] args) {
-        ModelDao modelDao = new ModelDaoImpl();
-        Model model = new Model();
-        model.setModelName("aaa");
-        model.setVehicleType("sedan");
-        model.setDescription("sss");
-        modelDao.save(model);
 
-    }
 }
