@@ -24,8 +24,8 @@ public class Config {
     @JoinColumn(name = "model_id")
     private Model model;
 
-    //@OneToMany(mappedBy = "config",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @OneToMany(mappedBy = "config", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "config",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "config", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Order> orders;
 
     @Transient
@@ -104,6 +104,11 @@ public class Config {
 
     public void setModelId(long modelId) {
         this.modelId = modelId;
+    }
+
+    public void addOrder(Order order){
+        this.getOrders().add(order);
+        order.setConfig(this);
     }
 
     @Override

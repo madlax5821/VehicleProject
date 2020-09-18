@@ -3,9 +3,7 @@ package com.ascending.repository;
 import com.ascending.dao.BrandDao;
 import com.ascending.dao.ModelDao;
 import com.ascending.init.AppInitializer;
-import com.ascending.model.Brand;
-import com.ascending.model.Config;
-import com.ascending.model.Model;
+import com.ascending.model.*;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -14,9 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -33,6 +28,10 @@ public class BrandDaoTest {
     private Model mod2;
     private Config con1;
     private Config con2;
+    private Order or1;
+    private Order or2;
+    private Customer cus1;
+    private Customer cus2;
 //    @BeforeClass
 //    public static void setupOnce(){ brandDao = new BrandDaoImpl(); modelDao = new ModelDaoImpl();}
 
@@ -42,22 +41,27 @@ public class BrandDaoTest {
 //        mod1 = new Model("TestModel1","Test","Test");
 //        mod2 = new Model("TestModel2","Test","Test");
 //
-//        con1 = new Config("VT6.0","fast",date);
-//        con2 = new Config("LP700-4","fast",date);
+//        con1 = new Config();con2 = new Config();
+//        con1.setConfigName("testConfig1");con2.setConfigName("testConfig2");
 //
-//        mod1.getConfigs().add(con1);
-//        con1.setModel(mod1);
+//        cus1 = new Customer();cus2 = new Customer();
+//        cus1.setName("testCus1");cus2.setName("testCus2");
 //
-//        mod2.getConfigs().add(con2);
-//        con2.setModel(mod2);
+//        or1 = new Order();or2 = new Order();
+//        or1.setOrderNumber("testOrder1");or2.setOrderNumber("testOrder2");
 //
-//        testBrand.getModels().add(mod1);
-//        mod1.setBrand(testBrand);
-//        brandDao.save(testBrand);
-
+//        or1.addCustomer(cus1);
+//        or2.addCustomer(cus2);
+//
+//        con1.addOrder(or1);
+//        con2.addOrder(or2);
+//
+//        mod1.addConfig(con1);
+//        mod2.addConfig(con2);
         testBrand= new Brand("TestBrand","Test","Test");
+//        testBrand.addModel(mod1);
+//        testBrand.addModel(mod2);
         brandDao.save(testBrand);
-        //testBrand.addModel(mod2);
     };
 
     @After
@@ -78,8 +82,8 @@ public class BrandDaoTest {
 
     @Test
     public void getAllBrandTest(){
-        List<Brand> brands = brandDao.getBrands();
-        Assert.assertEquals("amount comparison",4,brands.size());
+        List<Brand> brandList = brandDao.getBrands();
+        Assert.assertEquals("amount comparison",4,brandList.size());
     }
 
     @Test
@@ -92,7 +96,7 @@ public class BrandDaoTest {
     @Test
     public void getBrandByNameTest(){
         Brand brand = brandDao.getBrandByName(testBrand.getName());
-        Assert.assertNotEquals("brand comparison",brand,testBrand);
+        Assert.assertEquals("brand comparison",brand,testBrand);
     }
 
     @Test

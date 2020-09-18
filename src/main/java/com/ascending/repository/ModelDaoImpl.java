@@ -1,4 +1,5 @@
 package com.ascending.repository;
+import com.ascending.dao.BrandDao;
 import com.ascending.dao.ModelDao;
 import com.ascending.model.Brand;
 import com.ascending.model.Model;
@@ -131,5 +132,4 @@ public class ModelDaoImpl implements ModelDao {
             return models.get(r.nextInt(models.size()));
         }
     }
-
 }

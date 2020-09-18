@@ -17,8 +17,8 @@ public class Brand {
     private String nationality;
     @Column(name = "description")
     private String description;
-    //@OneToMany(mappedBy = "brand",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    @OneToMany(mappedBy = "brand",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "brand",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    //@OneToMany(mappedBy = "brand",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<Model> models;
 
     public Brand(){};

@@ -24,8 +24,8 @@ public class Order {
     @JoinColumn(name = "config_id")
     private Config config;
 
-    //@OneToOne(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
-    @OneToOne(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
+    //@OneToOne(fetch = FetchType.EAGER, mappedBy = "order", cascade = CascadeType.ALL)
     private Customer customer;
 
     @Transient
@@ -112,6 +112,12 @@ public class Order {
 
     public void setConfigId(long configId) {
         this.configId = configId;
+    }
+
+    public void addCustomer(Customer customer){
+        this.setCustomer(customer);
+        this.getCustomer();
+        customer.setOrder(this);
     }
 
     @Override

@@ -116,8 +116,9 @@ public class BrandDaoImpl implements BrandDao {
 
     @Override
     public List<Brand> getBrands() {
-        //String hql_getAll = "select distinct br From Brand as br left join fetch br.models as mo left join fetch mo.configs";
-        String hql_getAll = "from Brand";
+        String hql_getAll = "select distinct br From Brand as br left join fetch br.models as mos left join fetch mos.configs " +
+                "as cons left join fetch cons.orders as o left join fetch o.customer";
+        //String hql_getAll = "from Brand";
         try (Session session = HibernateUtil.getSession()) {
             Query<Brand> query = session.createQuery(hql_getAll);
             return query.list();

@@ -1,6 +1,6 @@
 CREATE TABLE brand (
     id                  BIGSERIAL NOT NULL,
-    name                VARCHAR(32) UNIQUE,
+    name                VARCHAR(32) ,
     nationality         VARCHAR(64),
     description         VARCHAR(128)
 );
