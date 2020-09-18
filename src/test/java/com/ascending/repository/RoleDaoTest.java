@@ -97,4 +97,11 @@ public class RoleDaoTest {
         Assert.assertTrue(ifDelete);
     }
 
+    @Test
+    public void getRoleByNameTest(){
+        String name = testRole.getName();
+        Role role = roleDao.getRoleByName(name);
+        Assert.assertEquals("role names comparison",testRole.getName(),role.getName());
+    }
+
 }

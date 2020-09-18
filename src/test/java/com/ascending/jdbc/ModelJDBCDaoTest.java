@@ -83,13 +83,15 @@ public class ModelJDBCDaoTest {
 
     @Test
     public void getModelByIdTest(){
-        Model model = modelDao.getModelById(testModel.getId());
-        Assert.assertEquals("model objects comparison",testModel,model);
+        long id = testModel.getId();
+        Model model = modelDao.getModelById(id);
+        Assert.assertEquals("model ids comparison",testModel.getId(),model.getId());
     }
 
     @Test
     public void getModelByNameTest(){
-        Model model = modelDao.getModelByName(testModel.getModelName());
-        Assert.assertEquals("model objects comparison",testModel,model);
+        String name = testModel.getModelName();
+        Model model = modelDao.getModelByName(name);
+        Assert.assertEquals("model names comparison",testModel.getModelName(),model.getModelName());
     }
 }

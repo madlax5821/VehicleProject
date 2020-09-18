@@ -74,13 +74,15 @@ public class CustomerServiceTest {
 
     @Test
     public void getCustomerByIdTest(){
-        Customer customer = customerService.getCustomerById(testCustomer.getId());
-        Assert.assertEquals("customer objects comparison",testCustomer,customer);
+        long id = testCustomer.getId();
+        Customer customer = customerService.getCustomerById(id);
+        Assert.assertEquals("customer ids comparison",testCustomer.getId(),customer.getId());
     }
 
     @Test
     public void getCustomerByNameTest(){
-        Customer customer = customerService.getCustomerByName(testCustomer.getName());
-        Assert.assertEquals("customer objects comparison",testCustomer,customer);
+        String name = testCustomer.getName();
+        Customer customer = customerService.getCustomerByName(name);
+        Assert.assertEquals("customer names comparison",testCustomer.getName(),customer.getName());
     }
 }

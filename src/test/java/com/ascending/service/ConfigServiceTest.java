@@ -74,13 +74,15 @@ public class ConfigServiceTest {
 
     @Test
     public void getConfigByIdTest(){
-        Config config = configService.getConfigById(testConfig.getId());
-        Assert.assertEquals("config objects comparison",testConfig,config);
+        long id = testConfig.getId();
+        Config config = configService.getConfigById(id);
+        Assert.assertEquals("config ids comparison",testConfig.getId(),config.getId());
     }
 
     @Test
     public void getConfigByNameTest(){
-        Config config = configService.getConfigByName(testConfig.getConfigName());
-        Assert.assertEquals("config objects comparison",testConfig,config);
+        String name = testConfig.getConfigName();
+        Config config = configService.getConfigByName(name);
+        Assert.assertEquals("config names comparison",testConfig.getConfigName(),config.getConfigName());
     }
 }

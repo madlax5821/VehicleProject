@@ -76,14 +76,16 @@ public class CustomerDaoTest {
 
     @Test
     public void getCustomerByIdTest(){
-        Customer customer = customerDao.getCustomerById(testCustomer.getId());
-        Assert.assertEquals("customer comparison",testCustomer,customer);
+        long id = testCustomer.getId();
+        Customer customer = customerDao.getCustomerById(id);
+        Assert.assertEquals("customer ids comparison",testCustomer.getId(),customer.getId());
     }
 
     @Test
     public void getCustomerByNameTest(){
-        Customer customer = customerDao.getCustomerByName(testCustomer.getName());
-        Assert.assertEquals("customer comparison",testCustomer,customer);
+        String name = testCustomer.getName();
+        Customer customer = customerDao.getCustomerByName(name);
+        Assert.assertEquals("customer names comparison",testCustomer.getName(),customer.getName());
     }
 
 }

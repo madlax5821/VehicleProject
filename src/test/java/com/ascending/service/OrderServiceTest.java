@@ -75,13 +75,15 @@ public class OrderServiceTest {
 
     @Test
     public void getOrderById(){
-        Order order = orderService.getOrderById(testOrder.getId());
-        Assert.assertEquals("order objects comparison",testOrder,order);
+        long id = testOrder.getId();
+        Order order = orderService.getOrderById(id);
+        Assert.assertEquals("order ids comparison",testOrder.getId(),order.getId());
     }
 
     @Test
     public void getOrderByName(){
-        Order order = orderService.getOrderByname(testOrder.getOrderNumber());
-        Assert.assertEquals("order objects comparison",testOrder,order);
+        String name = testOrder.getOrderNumber();
+        Order order = orderService.getOrderByname(name);
+        Assert.assertEquals("order names comparison",testOrder.getOrderNumber(),order.getOrderNumber());
     }
 }

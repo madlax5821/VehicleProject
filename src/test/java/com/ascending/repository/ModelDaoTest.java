@@ -19,12 +19,15 @@ import java.util.List;
 @SpringBootTest(classes = AppInitializer.class)
 public class ModelDaoTest {
     private Logger logger = LoggerFactory.getLogger(ModelDaoTest.class);
+
     @Autowired
     @Qualifier("ModelDaoImpl")
     private ModelDao modelDao;
+
     @Autowired
     @Qualifier("BrandDaoImpl")
     private BrandDao brandDao;
+
     private Model testModel;
     private Brand testBrand;
 
@@ -77,14 +80,16 @@ public class ModelDaoTest {
 
     @Test
     public void getModelByIdTest(){
-        Model model = modelDao.getModelById(testModel.getId());
-        Assert.assertEquals("Model comparison",testModel,model);
+        long id = testModel.getId();
+        Model model = modelDao.getModelById(id);
+        Assert.assertEquals("Model ids comparison",testModel.getId(),model.getId());
     }
 
     @Test
     public void getModelByNameTest(){
-        Model model = modelDao.getModelByName(testModel.getModelName());
-        Assert.assertEquals("Model comparison",testModel,model);
+        String name = testModel.getModelName();
+        Model model = modelDao.getModelByName(name);
+        Assert.assertEquals("model names comparison",testModel.getModelName(),model.getModelName());
     }
 
 

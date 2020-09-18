@@ -5,7 +5,6 @@ import com.ascending.model.Role;
 import java.util.List;
 
 public interface RoleDao {
-
     Role save(Role role);
     int delete(Role role);
     boolean update(Role role);

@@ -80,13 +80,15 @@ public class ConfigJDBCDaoTest {
 
     @Test
     public void getConfigByIdTest(){
-        Config config = configDao.getConfigById(testConfig.getId());
-        Assert.assertEquals("config objects comparison",testConfig,config);
+        long id = testConfig.getId();
+        Config config = configDao.getConfigById(id);
+        Assert.assertEquals("config ids comparison",testConfig.getId(),config.getId());
     }
 
     @Test
     public void getConfigByNameTest(){
-        Config config = configDao.getConfigByName(testConfig.getConfigName());
-        Assert.assertEquals("config objects comparison",testConfig,config);
+        String name = testConfig.getConfigName();
+        Config config = configDao.getConfigByName(name);
+        Assert.assertEquals("config objects comparison",testConfig.getConfigName(),config.getConfigName());
     }
 }

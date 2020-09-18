@@ -113,13 +113,15 @@ public class BrandServiceTest {
 
     @Test
     public void getBrandByIdTest(){
-        Brand brand = brandService.getBrandById(testBrand.getId());
-        Assert.assertEquals("brand objects comparison",testBrand,brand);
+        long id = testBrand.getId();
+        Brand brand = brandService.getBrandById(id);
+        Assert.assertEquals("brand ids comparison",testBrand.getId(),brand.getId());
     }
 
     @Test
     public void getBrandByNameTest(){
-        Brand brand = brandService.getBrandByName(testBrand.getName());
-        Assert.assertEquals("brand objects comparison",testBrand,brand);
+        String name = testBrand.getName();
+        Brand brand = brandService.getBrandByName(name);
+        Assert.assertEquals("brand names comparison",testBrand.getName(),brand.getName());
     }
 }

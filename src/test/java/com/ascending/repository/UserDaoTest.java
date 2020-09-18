@@ -46,7 +46,6 @@ public class UserDaoTest {
 
         userDao.save(testUser);
     }
-
     @After
     public void cleanUp(){
         userDao.delete(testUser);

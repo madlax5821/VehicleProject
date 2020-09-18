@@ -74,13 +74,15 @@ public class OrderDaoTest {
 
     @Test
     public void getOrderByIdTest(){
-        Order order = orderDao.getOrderById(testOrder.getId());
-        Assert.assertEquals("order objects comparison",testOrder,order);
+        long id = testOrder.getId();
+        Order order = orderDao.getOrderById(id);
+        Assert.assertEquals("order ids comparison",testOrder.getId(),order.getId());
     }
 
     @Test
     public void getOrderByNameTest(){
-        Order order = orderDao.getOrderByName(testOrder.getOrderNumber());
-        Assert.assertEquals("order objects comparison",testOrder,order);
+        String name = testOrder.getOrderNumber();
+        Order order = orderDao.getOrderByName(name);
+        Assert.assertEquals("order names comparison",testOrder.getOrderNumber(),order.getOrderNumber());
     }
 }

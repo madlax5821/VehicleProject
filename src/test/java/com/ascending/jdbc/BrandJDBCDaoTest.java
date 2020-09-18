@@ -71,14 +71,16 @@ public class BrandJDBCDaoTest {
 
     @Test
     public void getBrandByIdTest(){
-        Brand brand = brandDao.getBrandById(testBrand.getId());
-        Assert.assertEquals("brand objects comparison",testBrand,brand);
+        long id = testBrand.getId();
+        Brand brand = brandDao.getBrandById(id);
+        Assert.assertEquals("brand id comparison",testBrand.getId(),brand.getId());
     }
 
     @Test
     public void getBrandByNameTest(){
-        Brand brand = brandDao.getBrandByName(testBrand.getName());
-        Assert.assertEquals("brand objects comparison",testBrand,brand);
+        String name = testBrand.getName();
+        Brand brand = brandDao.getBrandByName(name);
+        Assert.assertEquals("brand names comparison",testBrand.getName(),brand.getName());
     }
 
     @Test
