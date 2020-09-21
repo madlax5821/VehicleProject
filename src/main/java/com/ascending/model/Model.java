@@ -1,5 +1,7 @@
 package com.ascending.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +23,7 @@ public class Model {
     @Column(name = "description")
     private String description;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
     private Brand brand;
@@ -29,25 +32,10 @@ public class Model {
     //@OneToMany(mappedBy = "model", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<Config> configs;
 
+    //@JsonIgnore
     @Transient
     @Column(name="brand_id")
     private long brandId;
-
-    public Model() {
-    }
-
-    public Model(long id, String modelName, String vehicleType, String description) {
-        this.setId(id);
-        this.setModelName(modelName);
-        this.setVehicleType(vehicleType);
-        this.setDescription(description);
-    }
-
-    public Model(String modelName, String vehicleType, String description) {
-        this.setModelName(modelName);
-        this.setVehicleType(vehicleType);
-        this.setDescription(description);
-    }
 
     public long getId() {
         return id;

@@ -1,5 +1,6 @@
 package com.ascending.repository;
 
+import com.ascending.dao.RoleDao;
 import com.ascending.dao.UserDao;
 import com.ascending.model.Role;
 import com.ascending.model.User;
@@ -171,6 +172,17 @@ public class UserDaoImpl implements UserDao {
         try(Session session = HibernateUtil.getSession()){
             Query<User> query = session.createQuery(hql_getByName);
             query.setParameter("name",username);
+            return query.uniqueResult();
+        }
+    }
+
+    @Override
+    public User getUserByNameAndEmail(String name, String email) {
+        String hql_getNameAndEmail = "From User as u join fetch u.roles as r where u.name=:name and lower(u.email)=:email";
+        try(Session session = HibernateUtil.getSession()){
+            Query<User> query = session.createQuery(hql_getNameAndEmail);
+            query.setParameter("name",name);
+            query.setParameter("email",email.toLowerCase().trim());
             return query.uniqueResult();
         }
     }

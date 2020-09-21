@@ -87,18 +87,15 @@ public class CustomerDaoImpl implements CustomerDao {
     public boolean deleteByName(String name) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = null;
-        String hql_deleteByName = "From Customer as cus where cus.name=:name";
+        String hql_deleteByName = "delete from Customer as cus where cus.name=:name";
         int ifDelete = 0;
         try {
             transaction = session.beginTransaction();
             Query<Customer> query = session.createQuery(hql_deleteByName);
             query.setParameter("name",name);
-            for (Customer customer:query.list()){
-                session.delete(customer);
-            }
+            ifDelete = query.executeUpdate();
             transaction.commit();
             session.close();
-            ifDelete=1;
         }catch (Exception e){
             if(transaction!=null) transaction.rollback();
             logger.info("Failed to delete customer by name, error="+e.getMessage());

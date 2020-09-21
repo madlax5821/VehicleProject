@@ -76,7 +76,7 @@ public class ConfigDaoImpl implements ConfigDao {
 
     @Override
     public List<Config> getConfigs() {
-        String hql_getAll = "from Config";
+        String hql_getAll = "from Config as c left join fetch c.orders as o left join fetch o.customer";
         try(Session session = HibernateUtil.getSession()){
             Query<Config> query = session.createQuery(hql_getAll);
             return query.list();
@@ -87,18 +87,15 @@ public class ConfigDaoImpl implements ConfigDao {
     public boolean deleteByName(String name) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = null;
-        String hql_deleteByName = "from Config as con where con.configName=:name";
+        String hql_deleteByName = "delete from Config as con where con.configName=:name";
         int ifDeleteByName = 0;
         try {
             transaction = session.beginTransaction();
             Query<Config> query = session.createQuery(hql_deleteByName);
             query.setParameter("name",name);
-            for (Config config:query.list()){
-                session.delete(config);
-            }
+            ifDeleteByName = query.executeUpdate();
             transaction.commit();
             session.close();
-            ifDeleteByName=1;
         }catch (Exception e){
             if (transaction!=null) transaction.rollback();
             logger.info("Failed to delete config object by name, error="+e.getMessage());
@@ -109,7 +106,7 @@ public class ConfigDaoImpl implements ConfigDao {
 
     @Override
     public Config getConfigById(long id) {
-        String hql_getById = "from Config as con where con.id=:id";
+        String hql_getById = "from Config as con left join fetch con.orders as o left join fetch o.customer where con.id=:id";
         try(Session session = HibernateUtil.getSession()){
             Query<Config> query = session.createQuery(hql_getById);
             query.setParameter("id",id);
@@ -119,7 +116,7 @@ public class ConfigDaoImpl implements ConfigDao {
 
     @Override
     public Config getConfigByName(String name) {
-        String hql_getByName = "from Config as con where con.configName=:name";
+        String hql_getByName = "from Config as con left join fetch con.orders as o left join fetch o.customer where con.configName=:name";
         try(Session session = HibernateUtil.getSession()){
             Query<Config> query = session.createQuery(hql_getByName);
             query.setParameter("name",name);

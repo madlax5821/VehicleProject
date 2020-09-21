@@ -294,12 +294,4 @@ public class BrandJDBCDaoImpl implements BrandDao {
         return null;
     }
 
-    public static void main(String[] args) {
-        BrandDao brandDao = new BrandJDBCDaoImpl();
-        Brand brand = new Brand("ss","ss","ss");
-        brandDao.save(brand);
-        brand = brandDao.getBrandByName("ss");
-
-        System.out.println(brandDao.getBrandById(184l));
-    }
 }

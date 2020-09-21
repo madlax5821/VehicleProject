@@ -1,5 +1,7 @@
 package com.ascending.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.sql.Date;
 import java.util.HashSet;
@@ -20,6 +22,7 @@ public class Config {
     @Column(name= "year")
     private Date year;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "model_id")
     private Model model;
@@ -31,21 +34,6 @@ public class Config {
     @Transient
     @Column(name="model_id")
     private long modelId;
-
-    public Config(String configName, String keyFeatures, Date year) {
-        this.setConfigName(configName);
-        this.setKeyFeatures(keyFeatures);
-        this.setYear(year);
-    }
-
-    public Config(long id, String configName, String keyFeatures, Date year) {
-        this.setId(id);
-        this.setConfigName(configName);
-        this.setKeyFeatures(keyFeatures);
-        this.setYear(year);
-    }
-
-    public Config() {};
 
     public long getId() {
         return id;

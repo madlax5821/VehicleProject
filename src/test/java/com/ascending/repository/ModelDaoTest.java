@@ -39,7 +39,8 @@ public class ModelDaoTest {
     @Before
     public void initTestModel(){
         testBrand = brandDao.getBrandById(1l);
-        testModel = modelDao.save(new Model("TestModel","TestType","TestDescription"),testBrand);
+        testModel = new Model(); testModel.setModelName("testModel");
+        modelDao.save(testModel,testBrand);
     }
     @After
     public void cleanUp(){modelDao.delete(testModel);}
@@ -59,10 +60,8 @@ public class ModelDaoTest {
 
     @Test
     public void updateModelTest(){
-        Model model = new Model();
-        model.setId(testModel.getId());
-        model.setModelName("askjdhafg");
-        boolean ifUpdate = modelDao.update(model,testBrand);
+        testModel.setModelName("updateTest");
+        boolean ifUpdate = modelDao.update(testModel,testBrand);
         Assert.assertTrue(ifUpdate);
     }
 

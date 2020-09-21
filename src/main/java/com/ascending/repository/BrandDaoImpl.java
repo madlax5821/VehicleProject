@@ -82,18 +82,15 @@ public class BrandDaoImpl implements BrandDao {
     public boolean deleteByName(String name) {
         Transaction transaction = null;
         Session session = HibernateUtil.getSession();
-        int ifdeleted = 0;
-        String hql_deleteByName = "From Brand as br where br.name=:name";
+        int ifDelete = 0;
+        String hql_deleteByName = "delete from Brand as br where br.name=:name";
         try{
             transaction = session.beginTransaction();
             Query<Brand> query = session.createQuery(hql_deleteByName);
             query.setParameter("name",name);
-            for (Brand brand:query.list()){
-                session.delete(brand);
-            }
+            ifDelete = query.executeUpdate();
             transaction.commit();
             session.close();
-            ifdeleted=1;
         }catch (Exception e){
             if(transaction!=null){
                 transaction.rollback();
@@ -101,12 +98,12 @@ public class BrandDaoImpl implements BrandDao {
                 session.close();
             }
         }
-        return ifdeleted>0;
+        return ifDelete>0;
     }
 
     @Override
     public Brand getBrandById(Long id) {
-        String hql_getById = "from Brand as br where br.id=:id";
+        String hql_getById = "from Brand as br left join fetch br.models as m left join fetch m.configs as c left join fetch c.orders as o left join fetch o.customer as c where br.id=:id";
         try(Session session=HibernateUtil.getSession()){
             Query<Brand> query = session.createQuery(hql_getById);
             query.setParameter("id",id);
@@ -118,7 +115,7 @@ public class BrandDaoImpl implements BrandDao {
     public List<Brand> getBrands() {
         String hql_getAll = "select distinct br From Brand as br left join fetch br.models as mos left join fetch mos.configs " +
                 "as cons left join fetch cons.orders as o left join fetch o.customer";
-        //String hql_getAll = "from Brand";
+//        String hql_getAll = "from Brand";
         try (Session session = HibernateUtil.getSession()) {
             Query<Brand> query = session.createQuery(hql_getAll);
             return query.list();
@@ -127,7 +124,8 @@ public class BrandDaoImpl implements BrandDao {
 
     @Override
     public Brand getBrandByName(String name) {
-        String hql_getbyName = "from Brand as br where br.name=:name";
+        String hql_getbyName = "from Brand as br left join fetch br.models as m left join fetch m.configs as c left join fetch c.orders as o left join fetch o.customer where br.name=:name";
+        //String hql_getByName = "from Brand as br";
         try(Session session = HibernateUtil.getSession()){
             Query<Brand> query = session.createQuery(hql_getbyName);
             query.setParameter("name",name);

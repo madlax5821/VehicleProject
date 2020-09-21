@@ -87,18 +87,15 @@ public class OrderDaoImpl implements OrderDao {
     public boolean deleteByOrderName(String name) {
         Session session = HibernateUtil.getSession();
         Transaction transaction = null;
-        String hql_deleteByName = "from Order as o where o.orderNumber=:order_number";
+        String hql_deleteByName = "delete from Order as o where o.orderNumber=:order_number";
         int ifDelete = 0;
         try {
             transaction = session.beginTransaction();
             Query<Order> query = session.createQuery(hql_deleteByName);
             query.setParameter("order_number",name);
-            for (Order order:query.list()){
-                session.delete(order);
-            }
+            ifDelete = query.executeUpdate();
             transaction.commit();
             session.close();
-            ifDelete=1;
         }catch (Exception e){
             if (transaction!=null) transaction.rollback();
             logger.info("Failed to delete order by name, error="+e.getMessage());
@@ -109,7 +106,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Order getOrderById(long id) {
-        String hql_getById = "from Order as o where o.id=:id";
+        String hql_getById = "from Order as o left join fetch o.customer as c where o.id=:id";
         try(Session session = HibernateUtil.getSession()){
             Query<Order> query = session.createQuery(hql_getById);
             query.setParameter("id",id);
@@ -119,7 +116,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Order getOrderByName(String orderNumber) {
-        String hql_getByName = "From Order as o where o.orderNumber=:order_number";
+        String hql_getByName = "From Order as o left join fetch o.customer where o.orderNumber=:order_number";
         try(Session session = HibernateUtil.getSession()){
             Query<Order> query = session.createQuery(hql_getByName);
             query.setParameter("order_number",orderNumber);

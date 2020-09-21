@@ -1,5 +1,7 @@
 package com.ascending.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -20,6 +22,7 @@ public class Order {
     @Column(name = "requirement")
     private String requirement;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "config_id")
     private Config config;
@@ -31,24 +34,6 @@ public class Order {
     @Transient
     @Column(name = "config_id")
     private long configId;
-
-    public Order() {
-    }
-
-    public Order(long id, String orderNumber, BigDecimal price, Date purchaseDate, String requirement) {
-        this.setId(id);
-        this.setOrderNumber(orderNumber);
-        this.setPrice(price);
-        this.setPurchaseDate(purchaseDate);
-        this.setRequirement(requirement);
-    }
-
-    public Order(String orderNumber, BigDecimal price, Date purchaseDate, String requirement) {
-        this.setOrderNumber(orderNumber);
-        this.setPrice(price);
-        this.setPurchaseDate(purchaseDate);
-        this.setRequirement(requirement);
-    }
 
     public long getId() {
         return id;

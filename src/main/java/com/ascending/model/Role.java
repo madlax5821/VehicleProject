@@ -1,5 +1,7 @@
 package com.ascending.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +32,7 @@ public class Role {
     @Column(name = "allowed_delete")
     private boolean ifAllowedDelete;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "roles",fetch = FetchType.LAZY)
     //@ManyToMany(mappedBy = "roles",fetch = FetchType.EAGER)
     private Set<User> users;

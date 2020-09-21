@@ -34,9 +34,10 @@ public class BrandJDBCDaoTest {
 
     @Before
     public void setupObjectForTest(){
-        testBrand = new Brand("test","test","test");
+        testBrand = new Brand();
+        testBrand.setName("testBrand");
         brandDao.save(testBrand);
-        testBrand = brandDao.getBrandByName("test");
+        testBrand = brandDao.getBrandByName("testBrand");
     }
     @After
     public void cleanUp(){

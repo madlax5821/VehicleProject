@@ -79,7 +79,8 @@ public class ModelDaoImpl implements ModelDao {
 
     @Override
     public List<Model> getModels() {
-        String hql_getAll = "from Model";
+        //String hql_getAll = "from Model";
+        String hql_getAll = "from Model as mos join fetch mos.brand as br left join fetch mos.configs as cons left join fetch cons.orders as ors left join fetch ors.customer as cus";
         try(Session session = HibernateUtil.getSession()){
             Query<Model> query = session.createQuery(hql_getAll);
             return query.list();
@@ -91,17 +92,14 @@ public class ModelDaoImpl implements ModelDao {
         Session session = HibernateUtil.getSession();
         Transaction transaction = null;
         int ifDelete = 0;
-        String hql_getByName = "From Model as m where m.modelName=:name";
+        String hql_getByName = "delete From Model as m where m.modelName=:name";
         try{
             transaction = session.beginTransaction();
             Query<Model> query = session.createQuery(hql_getByName);
             query.setParameter("name",name);
-            for (Model model:query.list()){
-                session.delete(model);
-            }
+            ifDelete = query.executeUpdate();
             transaction.commit();
             session.close();
-            ifDelete = 1;
         }catch (Exception e){
             if (transaction!=null)transaction.rollback();
             logger.info("failed to delete model by name, error="+e.getMessage());
@@ -112,7 +110,7 @@ public class ModelDaoImpl implements ModelDao {
 
     @Override
     public Model getModelById(long id) {
-        String hql_getById = "From Model as m where m.id=:id";
+        String hql_getById = "From Model as m left join fetch m.configs as c left join fetch c.orders as o left join fetch o.customer where m.id=:id";
         try(Session session = HibernateUtil.getSession()){
             Query<Model> query = session.createQuery(hql_getById);
             query.setParameter("id",id);
@@ -122,7 +120,7 @@ public class ModelDaoImpl implements ModelDao {
 
     @Override
     public Model getModelByName(String name) {
-        String hql_getByName = "From Model as m where m.modelName=:name";
+        String hql_getByName = "From Model as m left join fetch m.configs as c left join fetch c.orders as o left join fetch o.customer where m.modelName=:name";
         List<Model> models;
         try(Session session = HibernateUtil.getSession()){
             Query<Model> query = session.createQuery(hql_getByName);

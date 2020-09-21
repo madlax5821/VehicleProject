@@ -1,5 +1,7 @@
 package com.ascending.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -22,6 +24,7 @@ public class Customer {
     @Column(name = "information")
     private String information;
 
+    @JsonIgnore
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="order_id")
     private Order order;
@@ -29,15 +32,6 @@ public class Customer {
     @Transient
     @Column(name="order_id")
     private long orderId;
-
-    public Customer(){};
-
-    public Customer(long id, String name, String phoneNumber, String email, String information){
-        this.setId(id);this.setName(name);this.setPhoneNumber(phoneNumber);this.setEmail(email);this.setInformation(information);
-    }
-    public Customer(String name, String phoneNumber, String email, String information){
-        this.setName(name);this.setPhoneNumber(phoneNumber);this.setEmail(email);this.setInformation(information);
-    }
 
     public long getId() {
         return id;

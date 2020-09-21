@@ -37,7 +37,6 @@ public class CustomerDaoTest {
         testCustomer=new Customer();
         testCustomer.setName("testCustomer");
         customerDao.save(testCustomer,testOrder);
-        testCustomer = customerDao.getCustomerByName("testCustomer");
     }
     @After
     public void cleanUp(){customerDao.delete(testCustomer);}
@@ -57,8 +56,8 @@ public class CustomerDaoTest {
 
     @Test
     public void updateCustomerTest(){
-        Customer customer = new Customer(testCustomer.getId(),"test","999","999@qq.com","modified");
-        boolean ifUpdate= customerDao.update(customer,testOrder);
+        testCustomer.setName("updateTest");
+        boolean ifUpdate= customerDao.update(testCustomer,testOrder);
         Assert.assertTrue(ifUpdate);
     }
 

@@ -72,8 +72,8 @@ public class RoleDaoTest {
     public void deleteRoleTest() {
         userDao.delete(testUser1);
         userDao.delete(testUser2);
-        int i = roleDao.delete(testRole);
-        Assert.assertTrue(i > 0);
+        boolean ifdelete = roleDao.delete(testRole);
+        Assert.assertTrue(ifdelete);
     }
 
     @Test

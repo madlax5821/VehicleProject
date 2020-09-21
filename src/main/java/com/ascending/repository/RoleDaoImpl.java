@@ -1,9 +1,7 @@
 package com.ascending.repository;
 
 import com.ascending.dao.RoleDao;
-import com.ascending.dao.UserDao;
 import com.ascending.model.Role;
-import com.ascending.model.User;
 import com.ascending.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -40,7 +38,7 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     @Override
-    public int delete(Role role) {
+    public boolean delete(Role role) {
         Transaction transaction = null;
         SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         Session session = sessionFactory.openSession();
@@ -57,7 +55,7 @@ public class RoleDaoImpl implements RoleDao {
             logger.error("fail to delete record, error={}",e.getMessage());
             session.close();
         }
-        return deleteCount;
+        return deleteCount>0;
     }
 
     @Override
@@ -126,6 +124,5 @@ public class RoleDaoImpl implements RoleDao {
             return roles.get(r.nextInt(roles.size()));
         }
     }
-
 
 }

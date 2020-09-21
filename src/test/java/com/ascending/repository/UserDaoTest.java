@@ -121,8 +121,12 @@ public class UserDaoTest {
     }
 
     @Test
-    public void addRoleTest(){
-
+    public void getUserByEmailAndName(){
+        String name = testUser.getName();
+        String email = testUser.getEmail();
+        User user = userDao.getUserByNameAndEmail(name,email);
+        Assert.assertEquals("user name comparison",testUser.getName(),user.getName());
+        Assert.assertEquals("user email comparison", testUser.getEmail(),user.getEmail());
     }
 
 }

@@ -11,24 +11,19 @@ public class Brand {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private long id;
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "nationality")
     private String nationality;
+
     @Column(name = "description")
     private String description;
+
     @OneToMany(mappedBy = "brand",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     //@OneToMany(mappedBy = "brand",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<Model> models;
-
-    public Brand(){};
-
-    public Brand(long id,String name, String nationality, String description){
-        this.setId(id);this.setName(name);this.setNationality(nationality);this.setDescription(description);
-    }
-    public Brand(String name, String nationality, String description){
-        this.setName(name);this.setNationality(nationality);this.setDescription(description);
-    }
 
     public void addModel(Model model){
         this.getModels().add(model);

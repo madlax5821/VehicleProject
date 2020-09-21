@@ -33,7 +33,9 @@ public class ModelServiceTest {
     @Before
     public void setup(){
         testBrand = brandService.getBrandById(1l);
-        testModel = modelService.saveModel(new Model("testModel","test","test"),testBrand);
+        testModel = new Model();
+        testModel.setModelName("testModel");
+        modelService.saveModel(testModel,testBrand);
     }
     @After
     public void cleanUp(){modelService.deleteModel(testModel);}

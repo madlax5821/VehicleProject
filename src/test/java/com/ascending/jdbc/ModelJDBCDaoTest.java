@@ -38,11 +38,11 @@ public class ModelJDBCDaoTest {
     @Before
     public void setTestModel() {
         testBrand = brandDao.getBrandById(1l);
-        testModel = new Model("testModel", "test", "test");
+        testModel = new Model();
+        testModel.setModelName("testModel");
         modelDao.save(testModel, testBrand);
         testModel = modelDao.getModelByName(testModel.getModelName());
     }
-
     @After
     public void cleanUp() {
         modelDao.delete(testModel);
@@ -63,8 +63,8 @@ public class ModelJDBCDaoTest {
 
     @Test
     public void updateModelTest() {
-        Model model = new Model(testModel.getId(), "updateTest", "asdasd", "asdasd");
-        boolean ifUpdated = modelDao.update(model,testBrand);
+        testModel.setModelName("updateTest");
+        boolean ifUpdated = modelDao.update(testModel,testBrand);
         Assert.assertTrue("if updated", ifUpdated);
     }
 

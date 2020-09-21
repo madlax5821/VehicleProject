@@ -58,7 +58,7 @@ public class BrandDaoTest {
 //
 //        mod1.addConfig(con1);
 //        mod2.addConfig(con2);
-        testBrand= new Brand("TestBrand","Test","Test");
+        testBrand= new Brand(); testBrand.setName("testBrand");
 //        testBrand.addModel(mod1);
 //        testBrand.addModel(mod2);
         brandDao.save(testBrand);
@@ -75,7 +75,7 @@ public class BrandDaoTest {
     }
 
     @Test
-    public void deleteByBrandTest(){
+    public void deleteBrandTest(){
         boolean ifDeleted = brandDao.delete(testBrand);
         Assert.assertTrue(ifDeleted);
     }
@@ -88,8 +88,8 @@ public class BrandDaoTest {
 
     @Test
     public void updateBrandTest(){
-        Brand brand = new Brand(testBrand.getId(),"Stupid Car","Mars","Stupid");
-        boolean ifUpated= brandDao.update(brand);
+        testBrand.setName("updateTest");
+        boolean ifUpated= brandDao.update(testBrand);
         Assert.assertTrue(ifUpated);
     }
 
@@ -106,5 +106,12 @@ public class BrandDaoTest {
         Brand brand = brandDao.getBrandById(id);
         Assert.assertEquals("brand ids comparison",testBrand.getId(),brand.getId());
 
+    }
+
+    @Test
+    public void deleteBrandByNameTest(){
+        String name = testBrand.getName();
+        boolean ifdelete = brandDao.deleteByName(name);
+        Assert.assertTrue(ifdelete);
     }
 }

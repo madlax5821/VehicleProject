@@ -56,9 +56,7 @@ public class ConfigDaoTest{
 
     @Test
     public void updateConfigTest(){
-        Config config = new Config();
-        config.setId(testConfig.getId());
-        config.setConfigName("updatedTest");
+        testConfig.setConfigName("updateTest");
         boolean ifUpdate = configDao.update(testConfig,testModel);
         Assert.assertTrue(ifUpdate);
     }

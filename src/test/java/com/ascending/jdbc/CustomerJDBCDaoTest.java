@@ -22,6 +22,7 @@ import java.util.List;
 @SpringBootTest(classes = AppInitializer.class)
 public class CustomerJDBCDaoTest {
     private Logger logger = LoggerFactory.getLogger(CustomerJDBCDaoTest.class);
+
     @Autowired
     @Qualifier("CustomerJDBCDaoImpl")
     private CustomerDao customerDao;
