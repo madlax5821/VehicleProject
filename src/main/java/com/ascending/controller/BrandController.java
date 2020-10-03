@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "Brand")
+@RequestMapping(value = "/Brand")
 public class BrandController {
     private Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired

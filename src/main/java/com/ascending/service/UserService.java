@@ -19,4 +19,12 @@ public class UserService {
 
     public boolean delete(User user){return userDao.delete(user);}
 
+    public boolean update(User user){return userDao.update(user);}
+
+    public User getUserByCredential(String email, String password) throws Exception {return userDao.getUserByCredentials(email,password);}
+
+
+
+
+
 }

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "Order")
+@RequestMapping(value = "/Order")
 public class OrderController {
     private Logger logger = LoggerFactory.getLogger(getClass());
 

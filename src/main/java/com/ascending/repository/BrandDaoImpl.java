@@ -12,17 +12,33 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository("BrandDaoImpl")
 public class BrandDaoImpl implements BrandDao {
+    @Autowired
+    /*Injection field-based*/
+    private SessionFactory sessionFactory;
+
+    /*Injection constructor-based
+    * public AccountDaoImpl(@Autowired SessionFactory sf){
+    *   this.sessionFactory = sf;
+    * }*/
+
+    /*Injection setter-based
+      public BrandDaoImpl(){}
+    * public void setSessionFactory(@Autowired SessionFactory sf){
+    *   this.sessionFactory = sf;
+    * }*/
+
     private Logger logger = LoggerFactory.getLogger(BrandDaoImpl.class);
 
     @Override
     public Brand save(Brand brand) {
         Transaction transaction = null;
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         try{
             transaction = session.beginTransaction();
             session.save(brand);
@@ -40,7 +56,6 @@ public class BrandDaoImpl implements BrandDao {
     @Override
     public boolean delete(Brand brand) {
         Transaction transaction = null;
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
         Session session = sessionFactory.openSession();
         int deleteCount = 0;
         try{
@@ -61,7 +76,7 @@ public class BrandDaoImpl implements BrandDao {
     @Override
     public boolean update(Brand brand) {
         Transaction transaction = null;
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         int updateCount = 0;
         try {
             transaction = session.beginTransaction();
@@ -81,7 +96,7 @@ public class BrandDaoImpl implements BrandDao {
     @Override
     public boolean deleteByName(String name) {
         Transaction transaction = null;
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         int ifDelete = 0;
         String hql_deleteByName = "delete from Brand as br where br.name=:name";
         try{
@@ -104,7 +119,7 @@ public class BrandDaoImpl implements BrandDao {
     @Override
     public Brand getBrandById(Long id) {
         String hql_getById = "from Brand as br left join fetch br.models as m left join fetch m.configs as c left join fetch c.orders as o left join fetch o.customer as c where br.id=:id";
-        try(Session session=HibernateUtil.getSession()){
+        try(Session session=sessionFactory.openSession()){
             Query<Brand> query = session.createQuery(hql_getById);
             query.setParameter("id",id);
             return query.uniqueResult();
@@ -116,7 +131,7 @@ public class BrandDaoImpl implements BrandDao {
         String hql_getAll = "select distinct br From Brand as br left join fetch br.models as mos left join fetch mos.configs " +
                 "as cons left join fetch cons.orders as o left join fetch o.customer";
 //        String hql_getAll = "from Brand";
-        try (Session session = HibernateUtil.getSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<Brand> query = session.createQuery(hql_getAll);
             return query.list();
         }
@@ -126,7 +141,7 @@ public class BrandDaoImpl implements BrandDao {
     public Brand getBrandByName(String name) {
         String hql_getbyName = "from Brand as br left join fetch br.models as m left join fetch m.configs as c left join fetch c.orders as o left join fetch o.customer where br.name=:name";
         //String hql_getByName = "from Brand as br";
-        try(Session session = HibernateUtil.getSession()){
+        try(Session session = sessionFactory.openSession()){
             Query<Brand> query = session.createQuery(hql_getbyName);
             query.setParameter("name",name);
             return query.uniqueResult();

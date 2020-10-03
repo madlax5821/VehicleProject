@@ -28,7 +28,7 @@ public class HibernateUtil {
     }
     static {
         try{
-            sessionFactory = loadSessionFactory();
+            sessionFactory = HibernateUtil.loadSessionFactory();
         }catch(Exception e){
             logger.error("Exception while initializing hibernate util.. ");
             e.printStackTrace();
@@ -64,11 +64,11 @@ public class HibernateUtil {
         EntityScanner.scanPackages(modelPackages).addTo(configuration);
         StandardServiceRegistryBuilder registryBuilder = new StandardServiceRegistryBuilder();
         ServiceRegistry serviceRegistry = registryBuilder.applySettings(configuration.getProperties()).build();
-        SessionFactory localSesstionFactory= configuration.buildSessionFactory(serviceRegistry);
-        return localSesstionFactory;
+        SessionFactory localSessionFactory= configuration.buildSessionFactory(serviceRegistry);
+        return localSessionFactory;
     }
 
-    public static SessionFactory getSessionFactory(){
+    public  static SessionFactory getSessionFactory(){
         return loadSessionFactory();
     }
 
@@ -89,7 +89,8 @@ public class HibernateUtil {
     }
 
     public static void main(String[] args) {
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        HibernateUtil hibernateUtil = new HibernateUtil();
+        SessionFactory sessionFactory = hibernateUtil.getSessionFactory();
         //SessionFactory sessionFactory1 = HibernateUtil.getSessionFactory();
         logger.info("Success generate sessionFactory ={}", sessionFactory.toString());
         logger.info("Success generate sessionFactory, hashcode={}", sessionFactory.hashCode());

@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("Customer")
+@RequestMapping("/Customer")
 public class CustomerController {
     private Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired

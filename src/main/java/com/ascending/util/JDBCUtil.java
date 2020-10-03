@@ -21,8 +21,8 @@ public class JDBCUtil {
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
         }
         return connection;
     }

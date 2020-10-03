@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "Config")
+@RequestMapping(value = "/Config")
 public class ConfigController {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -25,10 +25,6 @@ public class ConfigController {
 
     @Autowired
     private ModelService modelService;
-
-    @Autowired
-    @Qualifier("ConfigDaoImpl")
-    private ConfigDao configDao;
 
     @PostMapping(value = "saveConfig", produces = MediaType.APPLICATION_JSON_VALUE)
     public Config saveConfig(@RequestBody Config config, Model model){
@@ -71,9 +67,4 @@ public class ConfigController {
         return config;
     }
 
-//    @GetMapping(value = "getConfigs", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public List<Config> getConfigs(){
-//        List<Config> configs = configDao.getConfigs();
-//        return configs;
-//    }
 }

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository("BrandJDBCDaoImpl")
-public class BrandJDBCDaoImpl implements BrandDao {
+public class  BrandJDBCDaoImpl implements BrandDao {
     private Logger logger = LoggerFactory.getLogger(BrandJDBCDaoImpl.class);
     //STEP 1: Database information
     private static final String DB_URL = "jdbc:postgresql://localhost:5432/windowsDB";

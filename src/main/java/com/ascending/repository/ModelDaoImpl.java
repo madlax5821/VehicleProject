@@ -5,10 +5,12 @@ import com.ascending.model.Brand;
 import com.ascending.model.Model;
 import com.ascending.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Random;
@@ -17,9 +19,12 @@ import java.util.Random;
 public class ModelDaoImpl implements ModelDao {
     private Logger logger = LoggerFactory.getLogger(ModelDaoImpl.class);
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Override
     public Model save(Model model,Brand brand) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
@@ -38,7 +43,7 @@ public class ModelDaoImpl implements ModelDao {
 
     @Override
     public boolean delete(Model model) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         int ifDeleted=0;
         try {
@@ -59,7 +64,7 @@ public class ModelDaoImpl implements ModelDao {
 
     @Override
     public boolean update(Model model, Brand brand) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         int ifUpdated = 0;
         try{
@@ -81,7 +86,7 @@ public class ModelDaoImpl implements ModelDao {
     public List<Model> getModels() {
         //String hql_getAll = "from Model";
         String hql_getAll = "from Model as mos join fetch mos.brand as br left join fetch mos.configs as cons left join fetch cons.orders as ors left join fetch ors.customer as cus";
-        try(Session session = HibernateUtil.getSession()){
+        try(Session session = sessionFactory.openSession()){
             Query<Model> query = session.createQuery(hql_getAll);
             return query.list();
         }
@@ -89,7 +94,7 @@ public class ModelDaoImpl implements ModelDao {
 
     @Override
     public boolean deleteByName(String name) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         int ifDelete = 0;
         String hql_getByName = "delete From Model as m where m.modelName=:name";
@@ -111,7 +116,7 @@ public class ModelDaoImpl implements ModelDao {
     @Override
     public Model getModelById(long id) {
         String hql_getById = "From Model as m left join fetch m.configs as c left join fetch c.orders as o left join fetch o.customer where m.id=:id";
-        try(Session session = HibernateUtil.getSession()){
+        try(Session session = sessionFactory.openSession()){
             Query<Model> query = session.createQuery(hql_getById);
             query.setParameter("id",id);
             return query.uniqueResult();
@@ -122,7 +127,7 @@ public class ModelDaoImpl implements ModelDao {
     public Model getModelByName(String name) {
         String hql_getByName = "From Model as m left join fetch m.configs as c left join fetch c.orders as o left join fetch o.customer where m.modelName=:name";
         List<Model> models;
-        try(Session session = HibernateUtil.getSession()){
+        try(Session session = sessionFactory.openSession()){
             Query<Model> query = session.createQuery(hql_getByName);
             query.setParameter("name",name);
             models=query.list();

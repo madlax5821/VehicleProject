@@ -41,6 +41,7 @@ public class RoleDaoTest {
         testUser1 = new User();
         testUser1.setName("testUser1");
         testUser1.setEmail("test1@Email.com");
+
         testUser2 = new User();
         testUser2.setName("testUser2");
         testUser2.setEmail("test2@email.com");
@@ -55,9 +56,14 @@ public class RoleDaoTest {
     }
     @After
     public void cleanUp() {
+        testRole.removeUser(testUser1);
+        testRole.removeUser(testUser2);
+        userDao.save(testUser1);
+        userDao.save(testUser2);
+        roleDao.delete(testRole);
         userDao.delete(testUser1);
         userDao.delete(testUser2);
-        roleDao.delete(testRole);
+
 
     }
 

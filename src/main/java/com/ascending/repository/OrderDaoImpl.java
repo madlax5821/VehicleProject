@@ -5,21 +5,27 @@ import com.ascending.model.Config;
 import com.ascending.model.Order;
 import com.ascending.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.nio.channels.SeekableByteChannel;
 import java.util.List;
 import java.util.Random;
 @Repository("OrderDaoImpl")
 public class OrderDaoImpl implements OrderDao {
     private Logger logger = LoggerFactory.getLogger(OrderDaoImpl.class);
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Override
     public Order save(Order order, Config config) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
@@ -37,7 +43,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public boolean delete(Order order) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         int ifDelete = 0;
         try {
@@ -56,7 +62,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public boolean update(Order order, Config config) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         int ifUpdate = 0;
         try {
@@ -77,7 +83,7 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public List<Order> getOrders() {
         String hql_getAll = "from Order";
-        try (Session session = HibernateUtil.getSession()){
+        try (Session session = sessionFactory.openSession()){
             Query<Order> query = session.createQuery(hql_getAll);
             return query.list();
         }
@@ -85,7 +91,7 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public boolean deleteByOrderName(String name) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         String hql_deleteByName = "delete from Order as o where o.orderNumber=:order_number";
         int ifDelete = 0;
@@ -107,7 +113,7 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public Order getOrderById(long id) {
         String hql_getById = "from Order as o left join fetch o.customer as c where o.id=:id";
-        try(Session session = HibernateUtil.getSession()){
+        try(Session session = sessionFactory.openSession()){
             Query<Order> query = session.createQuery(hql_getById);
             query.setParameter("id",id);
             return query.uniqueResult();
@@ -117,7 +123,7 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public Order getOrderByName(String orderNumber) {
         String hql_getByName = "From Order as o left join fetch o.customer where o.orderNumber=:order_number";
-        try(Session session = HibernateUtil.getSession()){
+        try(Session session = sessionFactory.openSession()){
             Query<Order> query = session.createQuery(hql_getByName);
             query.setParameter("order_number",orderNumber);
             List<Order> orders = query.list();

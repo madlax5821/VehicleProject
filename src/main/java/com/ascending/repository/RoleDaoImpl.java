@@ -2,6 +2,7 @@ package com.ascending.repository;
 
 import com.ascending.dao.RoleDao;
 import com.ascending.model.Role;
+import com.ascending.service.UserService;
 import com.ascending.util.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -9,6 +10,7 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 
@@ -19,13 +21,16 @@ import java.util.Random;
 public class RoleDaoImpl implements RoleDao {
     private Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Override
     public Role save(Role role) {
         Transaction transaction = null;
         Session session = HibernateUtil.getSession();
         try{
             transaction = session.beginTransaction();
-            session.save(role);
+            session.saveOrUpdate(role);
             transaction.commit();
             session.close();
         }catch (Exception e){
@@ -40,8 +45,7 @@ public class RoleDaoImpl implements RoleDao {
     @Override
     public boolean delete(Role role) {
         Transaction transaction = null;
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        Session session = sessionFactory.openSession();
+        Session session = HibernateUtil.getSession();
         int deleteCount = 0;
         try{
             transaction = session.beginTransaction();

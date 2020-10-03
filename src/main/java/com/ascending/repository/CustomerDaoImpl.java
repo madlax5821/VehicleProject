@@ -5,10 +5,12 @@ import com.ascending.model.Customer;
 import com.ascending.model.Order;
 import com.ascending.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,9 +19,13 @@ import java.util.Random;
 @Repository("CustomerDaoImpl")
 public class CustomerDaoImpl implements CustomerDao {
     private Logger logger = LoggerFactory.getLogger(CustomerDaoImpl.class);
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Override
     public Customer save(Customer customer, Order order) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
@@ -37,7 +43,7 @@ public class CustomerDaoImpl implements CustomerDao {
 
     @Override
     public boolean delete(Customer customer) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         int ifDelete = 0;
         try {
@@ -56,7 +62,7 @@ public class CustomerDaoImpl implements CustomerDao {
 
     @Override
     public boolean update(Customer customer, Order order) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         int ifUpdate = 0;
         try {
@@ -77,7 +83,7 @@ public class CustomerDaoImpl implements CustomerDao {
     @Override
     public List<Customer> getCustomers() {
         String hql_getAll = "from Customer";
-        try(Session session = HibernateUtil.getSession()){
+        try(Session session = sessionFactory.openSession()){
             Query<Customer> query = session.createQuery(hql_getAll);
             return query.list();
         }
@@ -85,7 +91,7 @@ public class CustomerDaoImpl implements CustomerDao {
 
     @Override
     public boolean deleteByName(String name) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         String hql_deleteByName = "delete from Customer as cus where cus.name=:name";
         int ifDelete = 0;
@@ -107,7 +113,7 @@ public class CustomerDaoImpl implements CustomerDao {
     @Override
     public Customer getCustomerById(long id) {
         String hql_getById = "From Customer as cus where cus.id=:id";
-        try(Session session = HibernateUtil.getSession()){
+        try(Session session = sessionFactory.openSession()){
             Query<Customer> query = session.createQuery(hql_getById);
             query.setParameter("id",id);
             return query.uniqueResult();
@@ -117,7 +123,7 @@ public class CustomerDaoImpl implements CustomerDao {
     @Override
     public Customer getCustomerByName(String name) {
         String hql_getByName = "From Customer as cus where cus.name = :name";
-        try (Session session = HibernateUtil.getSession()){
+        try (Session session = sessionFactory.openSession()){
             Query<Customer> query = session.createQuery(hql_getByName);
             query.setParameter("name",name);
             List<Customer> customers = query.list();

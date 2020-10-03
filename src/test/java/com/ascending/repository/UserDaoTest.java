@@ -5,6 +5,8 @@ import com.ascending.dao.UserDao;
 import com.ascending.init.AppInitializer;
 import com.ascending.model.Role;
 import com.ascending.model.User;
+import com.ascending.util.HibernateUtil;
+import org.hibernate.SessionFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,8 +17,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.List;
+import java.util.Set;
+
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = AppInitializer.class)
@@ -48,9 +52,16 @@ public class UserDaoTest {
     }
     @After
     public void cleanUp(){
-        userDao.delete(testUser);
+        testUser.removeRole(testRole1);
+        testUser.removeRole(testRole2);
+        userDao.save(testUser);
         roleDao.delete(testRole1);
+        userDao.delete(testUser);
         roleDao.delete(testRole2);
+    }
+    @Test
+    public void deleteExp(){
+        assertTrue(false);
     }
 
     @Test
@@ -77,14 +88,14 @@ public class UserDaoTest {
     @Test
     public void deleteUserTest(){
         boolean ifDelete = userDao.delete(testUser);
-        Assert.assertTrue(ifDelete);
+        assertTrue(ifDelete);
     }
 
     @Test
     public void updateUserTest(){
         testUser.setName("updateTest");
         boolean ifUpdate = userDao.update(testUser);
-        Assert.assertTrue(ifUpdate);
+        assertTrue(ifUpdate);
     }
 
     @Test
@@ -96,7 +107,7 @@ public class UserDaoTest {
     @Test
     public void deleteUserByNameTest(){
         boolean ifDelete = userDao.deleteByName(testUser.getName());
-        Assert.assertTrue(ifDelete);
+        assertTrue(ifDelete);
     }
 
     @Test
@@ -129,4 +140,18 @@ public class UserDaoTest {
         Assert.assertEquals("user email comparison", testUser.getEmail(),user.getEmail());
     }
 
+    @Test
+    public void test(){
+        User user = userDao.getUserById(2l);
+        Set<Role> roles = user.getRoles();
+        String allowedReadResources = "";
+        String allowedCreateResources = "";
+        String allowedUpdateResources = "";
+        String allowedDeleteResources = "";
+        for (Role role:roles) {
+            if (role.isIfAllowedRead())
+                allowedReadResources = String.join(role.getAllowedResource(), allowedReadResources, ",");
+            logger.info(allowedReadResources);
+        }
+    }
 }

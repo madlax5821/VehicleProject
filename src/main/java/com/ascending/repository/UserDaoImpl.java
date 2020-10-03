@@ -12,19 +12,26 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class UserDaoImpl implements UserDao {
     private Logger logger = LoggerFactory.getLogger(UserDaoImpl.class);
+
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Override
     public User save(User user) {
         Transaction transaction = null;
         Session session = HibernateUtil.getSession();
         try{
             transaction = session.beginTransaction();
-            session.save(user);
+            session.saveOrUpdate(user);
             transaction.commit();
             session.close();
         }catch (Exception e){
@@ -39,8 +46,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public boolean delete(User u) {
         Transaction transaction = null;
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        Session session = sessionFactory.openSession();
+        Session session = HibernateUtil.getSession();
         try{
             transaction = session.beginTransaction();
             session.delete(u);
@@ -68,7 +74,7 @@ public class UserDaoImpl implements UserDao {
             ifUpdate=1;
         }catch (Exception e){
             if (transaction!=null);
-            transaction.rollback();
+                transaction.rollback();
             logger.debug("Failed to update user, error:"+e.getMessage());
             session.close();
         }
@@ -134,7 +140,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getUserByCredentials(String email, String password) throws Exception {
         String hql = "from User as u join fetch u.roles where lower(u.email) = :email and u.password = :password";
-//        logger.debug(String.format("User emial",email,password));
+//        logger.debug(String.format("User email",email,password));
         try(Session session = HibernateUtil.getSession()){
             Query<User> query = session.createQuery(hql);
             query.setParameter("email",email.toLowerCase().trim());
@@ -187,4 +193,16 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    public static void main(String[] args) {
+        String str = "ni,hao,ma,";
+        String[] strings = str.split("\\,");
+        for (String s1:strings){
+            System.out.println(s1);
+        }
+        String[] strs = str.split(",");
+        for (String s2:strs){
+            System.out.println(s2);
+        }
+    }
 }
+

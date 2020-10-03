@@ -3,12 +3,13 @@ package com.ascending.repository;
 import com.ascending.dao.ConfigDao;
 import com.ascending.model.Config;
 import com.ascending.model.Model;
-import com.ascending.util.HibernateUtil;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Random;
@@ -17,9 +18,12 @@ import java.util.Random;
 public class ConfigDaoImpl implements ConfigDao {
     private Logger logger = LoggerFactory.getLogger(ConfigDaoImpl.class);
 
+    @Autowired
+    private SessionFactory sessionFactory;
+
     @Override
     public Config save(Config config, Model model) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         try {
             transaction = session.beginTransaction();
@@ -37,7 +41,7 @@ public class ConfigDaoImpl implements ConfigDao {
 
     @Override
     public boolean delete(Config config) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         int ifDelete = 0;
         try {
@@ -57,7 +61,7 @@ public class ConfigDaoImpl implements ConfigDao {
     @Override
     public boolean update(Config config, Model model) {
         Transaction transaction = null;
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         int ifUpdate = 0;
         try {
             transaction = session.beginTransaction();
@@ -77,7 +81,7 @@ public class ConfigDaoImpl implements ConfigDao {
     @Override
     public List<Config> getConfigs() {
         String hql_getAll = "from Config as c left join fetch c.orders as o left join fetch o.customer";
-        try(Session session = HibernateUtil.getSession()){
+        try(Session session = sessionFactory.openSession()){
             Query<Config> query = session.createQuery(hql_getAll);
             return query.list();
         }
@@ -85,7 +89,7 @@ public class ConfigDaoImpl implements ConfigDao {
 
     @Override
     public boolean deleteByName(String name) {
-        Session session = HibernateUtil.getSession();
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
         String hql_deleteByName = "delete from Config as con where con.configName=:name";
         int ifDeleteByName = 0;
@@ -107,7 +111,7 @@ public class ConfigDaoImpl implements ConfigDao {
     @Override
     public Config getConfigById(long id) {
         String hql_getById = "from Config as con left join fetch con.orders as o left join fetch o.customer where con.id=:id";
-        try(Session session = HibernateUtil.getSession()){
+        try(Session session = sessionFactory.openSession()){
             Query<Config> query = session.createQuery(hql_getById);
             query.setParameter("id",id);
             return query.uniqueResult();
@@ -117,7 +121,7 @@ public class ConfigDaoImpl implements ConfigDao {
     @Override
     public Config getConfigByName(String name) {
         String hql_getByName = "from Config as con left join fetch con.orders as o left join fetch o.customer where con.configName=:name";
-        try(Session session = HibernateUtil.getSession()){
+        try(Session session = sessionFactory.openSession()){
             Query<Config> query = session.createQuery(hql_getByName);
             query.setParameter("name",name);
             List<Config> configs = query.list();
