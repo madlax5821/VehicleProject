@@ -34,9 +34,9 @@ public class ModelDaoImpl implements ModelDao {
             session.close();
         }catch (Exception e){
             if (transaction!=null)
+                logger.info("failed to insert model data, error="+e.getMessage());
                 transaction.rollback();
-            logger.info("failed to insert model data, error="+e.getMessage());
-            session.close();
+                session.close();
         }
         return model;
     }

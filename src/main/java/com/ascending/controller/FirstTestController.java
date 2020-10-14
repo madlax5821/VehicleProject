@@ -34,7 +34,7 @@ public class FirstTestController {
     }
 
     @GetMapping(value="hi",produces = MediaType.APPLICATION_JSON_VALUE)
-    public String greetingWithHiUsingSingleRequestParam(@RequestParam("name123")String name){
+    public String greetingWithHiUsingSingleRequestParam(@RequestParam("name")String name){
         return "hi "+name;
     }
 
@@ -43,7 +43,7 @@ public class FirstTestController {
         return "hi "+name;
     }
 
-    @GetMapping(value = "hia",params = {"name","location"},produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "hi",params = {"name","location"},produces = MediaType.APPLICATION_JSON_VALUE)
     public String greetingWithHiUsingSingleRequestParam2(@RequestParam("name")String name, @RequestParam("location")String location){
         return "hi "+name+" "+location;
     }

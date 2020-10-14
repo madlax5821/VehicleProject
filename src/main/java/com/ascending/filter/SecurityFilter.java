@@ -6,12 +6,13 @@ import org.postgresql.largeobject.BlobOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+
+
 @WebFilter(filterName = "SecurityFilter",dispatcherTypes ={DispatcherType.REQUEST})
 public class SecurityFilter implements Filter {
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -52,7 +53,7 @@ public class SecurityFilter implements Filter {
             statusCode = HttpServletResponse.SC_ACCEPTED;
         }
         String httpMethodValue = req.getMethod();
-        logger.info("the request methods are =={}",httpMethodValue);
+        logger.info("the request method is =={}",httpMethodValue);
         try{
             String wholeTokenString = req.getHeader("Authorization");
             String token = wholeTokenString.replaceAll("^(.*?) ", "");

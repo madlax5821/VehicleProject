@@ -38,6 +38,9 @@ public class User {
     @Column(name = "email")
     private String email;
 
+    @OneToMany (mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<Image> images;
+
     @ManyToMany(fetch = FetchType.LAZY)
     //@ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
@@ -108,6 +111,15 @@ public class User {
         return roles;
     }
 
+    public void setImages(Set<Image> images){ this.images = images;}
+
+    public Set<Image> getImages(){
+        if (images==null){
+            images = new HashSet<>();
+        }
+        return images;
+    }
+
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
@@ -115,6 +127,16 @@ public class User {
     public void addRole(Role role){
         this.getRoles().add(role);
         role.getUsers().add(this);
+    }
+
+    public void addImage(Image image){
+        this.getImages().add(image);
+        image.setUser(this);
+    }
+
+    public void removeImage(Image image){
+        this.getImages().remove(image);
+        image.setUser(null);
     }
 
     public void removeRole(Role role){
