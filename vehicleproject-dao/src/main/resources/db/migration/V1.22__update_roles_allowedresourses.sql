@@ -1,1 +1,0 @@
-update roles set allowed_resource = '/Brand/postBrand,/Brand/saveBrand,/Brand/getBrands,/Brand/getBrandById,/Brand/getBrandByName' WHERE id =2;
