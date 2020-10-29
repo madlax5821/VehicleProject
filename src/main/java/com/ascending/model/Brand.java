@@ -82,4 +82,6 @@ public class Brand {
                 ", description='" + description + '\'' +
                 '}';
     }
+
+
 }

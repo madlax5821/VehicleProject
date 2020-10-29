@@ -64,9 +64,9 @@ public class AWSMessageServiceMockTest {
     @Test
     public void createQueue_happyPath(){
         when(mockAmazonSQS.createQueue(any(CreateQueueRequest.class)).getQueueUrl()).thenReturn(fakeQueueUrl);
-        when(mockAmazonSQS.getQueueUrl(anyString()).getQueueUrl()).thenThrow(new QueueDoesNotExistException("the queue does not exist."));
+        when(mockAmazonSQS.getQueueUrl(anyString()).getQueueUrl()).thenThrow(new QueueDoesNotExistException("queue doesn`t exist."));
         String queueUrl = awsMessageService.createQueue(queueName);
-        Assert.assertEquals(fakeQueueUrl,queueUrl);
+        Assert.assertEquals("queue url comparison",fakeQueueUrl,queueUrl);
         verify(mockAmazonSQS,times(1)).createQueue(any(CreateQueueRequest.class));
     }
 
@@ -77,7 +77,29 @@ public class AWSMessageServiceMockTest {
         when(getQueueUrlResult.getQueueUrl()).thenReturn(fakeQueueUrl);
 
         String queueUrl = awsMessageService.createQueue(queueName);
-        Assert.assertEquals(fakeQueueUrl,queueUrl);
+        Assert.assertEquals("queue url comparison",fakeQueueUrl,queueUrl);
         verify(mockAmazonSQS,never()).createQueue(any(CreateQueueRequest.class));
+        verify(mockAmazonSQS,times(1)).getQueueUrl(anyString());
+    }
+
+    @Test
+    public void testSendMessage(){
+        SendMessageResult sendMessageResult = mock(SendMessageResult.class);
+        when(mockAmazonSQS.sendMessage(any(SendMessageRequest.class))).thenReturn(sendMessageResult);
+        when(sendMessageResult.getMD5OfMessageBody()).thenReturn(msg);
+        awsMessageService.sendMessage(fakeQueueUrl,msg);
+        Assert.assertEquals(msg,sendMessageResult.getMD5OfMessageBody());
+        verify(mockAmazonSQS,times(1)).sendMessage(any(SendMessageRequest.class));
+
+    }
+
+    @Test
+    public void testGetMessages(){
+        ReceiveMessageResult receiveMessageResult = mock(ReceiveMessageResult.class);
+        when(mockAmazonSQS.receiveMessage(anyString())).thenReturn(receiveMessageResult);
+        when(receiveMessageResult.getMessages()).thenReturn(messages);
+        List<Message> testMessage = awsMessageService.getMessages(fakeQueueUrl);
+        Assert.assertEquals("message amount comparison",messages.size(),testMessage.size());
+        verify(mockAmazonSQS,times(1)).receiveMessage(anyString());
     }
 }

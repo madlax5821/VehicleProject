@@ -89,7 +89,6 @@ public class HibernateUtil {
     }
 
     public static void main(String[] args) {
-        HibernateUtil hibernateUtil = new HibernateUtil();
         SessionFactory sessionFactory = hibernateUtil.getSessionFactory();
         //SessionFactory sessionFactory1 = HibernateUtil.getSessionFactory();
         logger.info("Success generate sessionFactory ={}", sessionFactory.toString());
